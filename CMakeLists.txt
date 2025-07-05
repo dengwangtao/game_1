@@ -19,18 +19,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/bin)
 
 
-# 设置目标名称
-set(TARGET ${PROJECT_NAME}-${CMAKE_SYSTEM_NAME})
-
-
-
 find_package(SDL2 REQUIRED)
 
 
-add_executable(${TARGET} hello.cpp)
-
-target_link_libraries(
-    ${TARGET}
-        SDL2::SDL2main
-        SDL2::SDL2
-)
+add_subdirectory(src)

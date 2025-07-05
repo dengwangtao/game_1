@@ -11,14 +11,6 @@ int main(int, char**)
 
     LOG_DEBUG("Debug message %s", "Hello, World!");
 
-    // SDL guard, 自动调用 SDL_Quit()
-    auto sdl_mem = [](void*){
-        LOG_DEBUG("SDL_Quit()");
-        SDL_Quit();
-    };
-    s32 __add;
-    std::unique_ptr<s32, decltype(sdl_mem)> sdl_guard(&__add, sdl_mem);
-
 
     // SDL 初始化
     if (SDL_Init(SDL_INIT_EVERYTHING)!= 0)
@@ -26,6 +18,14 @@ int main(int, char**)
         LOG_ERROR("SDL_Init Error: %s", SDL_GetError());
         return 1;
     }
+    // SDL guard, 自动调用 SDL_Quit()
+    auto sdl_mem = [](void*){
+        LOG_DEBUG("SDL_Quit()");
+        SDL_Quit();
+    };
+    s32 __sdl_quit;
+    std::unique_ptr<s32, decltype(sdl_mem)> sdl_guard(&__sdl_quit, sdl_mem);
+
 
     constexpr s32 window_width  = 800;
     constexpr s32 window_height = 600;
@@ -37,12 +37,33 @@ int main(int, char**)
             window_width, window_height, 
             SDL_WINDOW_SHOWN
         )
-    , &SDL_DestroyWindow);
+        , &SDL_DestroyWindow);
 
     // 创建一个渲染器
     std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> renderer_guard(
         SDL_CreateRenderer(window_guard.get(), -1, SDL_RENDERER_ACCELERATED)
         , &SDL_DestroyRenderer);
+
+
+    // 初始化SDL_image
+    if (IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG) != (IMG_INIT_PNG | IMG_INIT_JPG))
+    {
+        LOG_ERROR("IMG_Init Error: %s", IMG_GetError());
+        return 1;
+    }
+    // SDL_image guard, 自动调用 IMG_Quit()
+    auto img_mem = [](void*){
+        LOG_DEBUG("IMG_Quit()");
+        IMG_Quit();
+    };
+    s32 __img_quit;
+    std::unique_ptr<s32, decltype(img_mem)> sdl_image_guard(&__img_quit, img_mem);
+
+
+    // 加载图片
+    std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)> texture_guard(
+        IMG_LoadTexture(renderer_guard.get(), "../assets/image/bg.png")
+       , &SDL_DestroyTexture);
 
 
     // 渲染循环
@@ -73,6 +94,10 @@ int main(int, char**)
         // SDL_RenderDrawRect(renderer_guard.get(), &rect);
         SDL_RenderFillRect(renderer_guard.get(), &rect);
 
+
+        // 绘制图片
+        SDL_Rect texture_rect{ 100, 100, 500, 500 };
+        SDL_RenderCopy(renderer_guard.get(), texture_guard.get(), nullptr, &texture_rect);
 
         // 更新窗口
         SDL_RenderPresent(renderer_guard.get());

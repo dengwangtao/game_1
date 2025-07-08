@@ -1,6 +1,10 @@
 #include <iostream>
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_mixer.h>
+#include <SDL_ttf.h>
+
+#include <memory>
 
 #include "comm_def.h"
 
@@ -12,6 +16,7 @@ int main(int, char**)
     LOG_DEBUG("Debug message %s", "Hello, World!");
 
 
+#pragma region SDL initialization
     // SDL 初始化
     if (SDL_Init(SDL_INIT_EVERYTHING)!= 0)
     {
@@ -25,7 +30,7 @@ int main(int, char**)
     };
     s32 __sdl_quit;
     std::unique_ptr<s32, decltype(sdl_mem)> sdl_guard(&__sdl_quit, sdl_mem);
-
+#pragma endregion
 
     constexpr s32 window_width  = 800;
     constexpr s32 window_height = 600;
@@ -45,6 +50,7 @@ int main(int, char**)
         , &SDL_DestroyRenderer);
 
 
+#pragma region init SDL_image
     // 初始化SDL_image
     if (IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG) != (IMG_INIT_PNG | IMG_INIT_JPG))
     {
@@ -58,12 +64,84 @@ int main(int, char**)
     };
     s32 __img_quit;
     std::unique_ptr<s32, decltype(img_mem)> sdl_image_guard(&__img_quit, img_mem);
-
+#pragma endregion
 
     // 加载图片
     std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)> texture_guard(
         IMG_LoadTexture(renderer_guard.get(), "../assets/image/bg.png")
        , &SDL_DestroyTexture);
+
+#pragma region SDL_mixer initialization
+    // SDL_mixer 初始化
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) != 0)
+    {
+        LOG_ERROR("Mix_OpenAudio Error: %s", Mix_GetError());
+        return 1;
+    }
+    // SDL_mixer guard, 自动调用 Mix_CloseAudio() 和 Mix_Quit()
+    auto mix_mem = [](void*){
+        LOG_DEBUG("Mix_CloseAudio()");
+        Mix_CloseAudio();
+        LOG_DEBUG("Mix_Quit()");
+        Mix_Quit();
+    };
+    s32 __mix_quit;
+    std::unique_ptr<s32, decltype(mix_mem)> sdl_mixer_guard(&__mix_quit, mix_mem);
+#pragma endregion
+
+    // 加载音效
+    std::unique_ptr<Mix_Music, decltype(&Mix_FreeMusic)> music_guard(
+        Mix_LoadMUS("../assets/music/03_Racing_Through_Asteroids_Loop.ogg")
+        , &Mix_FreeMusic);
+    
+    if (music_guard.get() == nullptr)
+    {
+        LOG_ERROR("Mix_LoadMUS Error: %s", Mix_GetError());
+        return 1;
+    }
+
+    Mix_PlayMusic(music_guard.get(), -1); // 无限循环播放音乐
+    
+
+#pragma region SDL_ttf initialization
+    // 初始化SDL_ttf
+    if (TTF_Init() != 0)
+    {
+        LOG_ERROR("TTF_Init Error: %s", TTF_GetError());
+        return 1;
+    }
+    // SDL_ttf guard, 自动调用 TTF_Quit()
+    auto ttf_mem = [](void*){
+        LOG_DEBUG("TTF_Quit()");
+        TTF_Quit();
+    };
+    s32 __ttf_quit;
+    std::unique_ptr<s32, decltype(ttf_mem)> sdl_ttf_guard(&__ttf_quit, ttf_mem);
+#pragma endregion
+
+    // 加载字体
+    std::unique_ptr<TTF_Font, decltype(&TTF_CloseFont)> font_guard(
+        TTF_OpenFont("../assets/font/VonwaonBitmap-12px.ttf", 24)
+        , &TTF_CloseFont);
+
+    if (font_guard.get() == nullptr)
+    {
+        LOG_ERROR("TTF_OpenFont Error: %s", TTF_GetError());
+        return 1;
+    }
+
+    // 创建文本
+    SDL_Color color{ 255, 255 };
+    std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)> text_surface_guard(
+        TTF_RenderUTF8_Solid(font_guard.get(), "Hello, World! 中文", color)
+        , &SDL_FreeSurface);
+    
+    // 转换为纹理
+    std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)> text_texture_guard(
+        SDL_CreateTextureFromSurface(renderer_guard.get(), text_surface_guard.get())
+       , &SDL_DestroyTexture);
+
+
 
 
     // 渲染循环
@@ -98,6 +176,10 @@ int main(int, char**)
         // 绘制图片
         SDL_Rect texture_rect{ 100, 100, 500, 500 };
         SDL_RenderCopy(renderer_guard.get(), texture_guard.get(), nullptr, &texture_rect);
+
+        // 绘制文本
+        SDL_Rect text_rect{ 100, 100, text_surface_guard->w, text_surface_guard->h };
+        SDL_RenderCopy(renderer_guard.get(), text_texture_guard.get(), nullptr, &text_rect);
 
         // 更新窗口
         SDL_RenderPresent(renderer_guard.get());

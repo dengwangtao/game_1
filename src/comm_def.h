@@ -18,3 +18,19 @@ using s8 = signed char;
 #define LOG_INFO(fmt, ...) SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, fmt, ##__VA_ARGS__)
 #define LOG_WARN(fmt, ...) SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, fmt, ##__VA_ARGS__)
 #define LOG_ERROR(fmt, ...) SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, fmt, ##__VA_ARGS__)
+
+
+
+#define DEF_Property(type, name) \
+public: \
+    type name() const { return name##_; } \
+    void set_##name(type value) { name##_ = value; } \
+private: \
+    type name##_ = {};
+
+#define DEF_Property_default(type, name, default_value) \
+public: \
+    type name() const { return name##_; } \
+    void set_##name(type value) { name##_ = value; } \
+private: \
+    type name##_ = default_value;

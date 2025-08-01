@@ -5,7 +5,7 @@
 
 #include "scene.h"
 
-
+class Player;
 
 class SceneMain : public Scene
 {
@@ -21,6 +21,10 @@ public:
     s32 handleEvent(SDL_Event* event) override;
 
 private:
+    DEF_Property_default(bool, inited, false);
+
+    Player* player_ = nullptr;
+
 };
 
 

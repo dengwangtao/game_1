@@ -19,8 +19,7 @@ int main(int, char**)
 
     LOG_DEBUG("Debug message %s", "Hello, World!");
 
-
-    Game game;
+    auto& game = G_GAME;
     game.init();
     game.run();
 

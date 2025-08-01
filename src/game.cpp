@@ -1,6 +1,9 @@
 #include "game.h"
 #include "scene_main.h"
 
+#include <SDL.h>
+#include <SDL_image.h>
+
 Game::Game()
 {
 }
@@ -17,6 +20,8 @@ s32 Game::run()
         LOG_ERROR("game not inited");
         return -1;
     }
+
+    LOG_INFO("game run");
 
     set_is_running(true);
     
@@ -47,6 +52,13 @@ s32 Game::init()
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
     {
         LOG_ERROR("SDL_Init error: %s", SDL_GetError());
+        set_is_running(false);
+    }
+
+    // 初始化SDL_image
+    if (IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG) != (IMG_INIT_JPG | IMG_INIT_PNG))
+    {
+        LOG_ERROR("IMG_Init error: %s", IMG_GetError());
         set_is_running(false);
     }
     
@@ -110,6 +122,10 @@ s32 Game::clean()
         LOG_DEBUG("SDL_DestroyRenderer");
     }
 
+    // 清理SDL_image
+    IMG_Quit();
+    LOG_DEBUG("IMG_Quit");
+
     // 退出SDL
     SDL_Quit();
     LOG_DEBUG("SDL_Quit");
@@ -124,6 +140,8 @@ s32 Game::changeScene(Scene *scene)
         LOG_ERROR("scene is null");
         return -1;
     }
+
+    LOG_INFO("change scene to %p", (void*)scene);
 
     if (current_scene())
     {
@@ -161,18 +179,15 @@ s32 Game::handleEvent(SDL_Event* event)
 }
 s32 Game::update()
 {
-    if (! current_scene())
+    if (current_scene())
     {
-        return -1;
+        current_scene()->update();
     }
-    current_scene()->update();
 
     return 0;
 }
 s32 Game::render()
 {
-
-
     // 三步: 1. 清除屏幕 2. 绘制场景 3. 更新屏幕
     SDL_RenderClear(renderer_);
 

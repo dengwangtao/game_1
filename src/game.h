@@ -4,10 +4,12 @@
 
 #include "comm_def.h"
 #include "scene.h"
-#include <SDL.h>
+#include "singleton.h"
 
+struct SDL_Window;
+struct SDL_Renderer;
 
-class Game
+class Game : public Singleton<Game>
 {
 
 public:
@@ -28,15 +30,15 @@ private:
     DEF_Property(s32, is_running);
     DEF_Property(Scene*, current_scene); // 当前场景
 
-    SDL_Window* window_ = nullptr;       // 窗口
-    SDL_Renderer* renderer_ = nullptr;   // 渲染器
+    DEF_Property(SDL_Window*, window); // 窗口
+    DEF_Property(SDL_Renderer*, renderer); // 渲染器
 
     DEF_Property_default(s32, window_width, 600);
     DEF_Property_default(s32, window_height, 800);
 };
 
 
-
+#define G_GAME Game::Instance()
 
 
 

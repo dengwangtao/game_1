@@ -7,6 +7,8 @@ using u64 = unsigned long long;
 using s64 = signed long long;
 using u32 = unsigned int;
 using s32 = signed int;
+using f32 = float;
+using f64 = double;
 using u16 = unsigned short;
 using s16 = signed short;
 using u8 = unsigned char;
@@ -30,6 +32,7 @@ using s8 = signed char;
 #define DEF_Property_default(type, name, default_value) \
 public: \
     type name() const { return name##_; } \
+    type* mutable_##name() { return &name##_; } \
     void set_##name(type value) { name##_ = value; } \
 private: \
     type name##_ = default_value;

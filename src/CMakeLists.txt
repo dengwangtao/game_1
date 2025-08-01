@@ -9,7 +9,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 set(TARGET ${PROJECT_NAME}-${CMAKE_SYSTEM_NAME})
 
 # 扫描所有cpp
-aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR} SRCS)
+file(GLOB_RECURSE SRCS CONFIGURE_DEPENDS *.cpp *.h)
 
 add_executable(${TARGET} ${SRCS})
 

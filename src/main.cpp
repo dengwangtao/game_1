@@ -10,6 +10,7 @@
 
 
 #include "scene_main.h"
+#include "game.h"
 
 int main(int, char**)
 {
@@ -18,7 +19,10 @@ int main(int, char**)
 
     LOG_DEBUG("Debug message %s", "Hello, World!");
 
-    SceneMain scene;
+
+    Game game;
+    game.init();
+    game.run();
 
 
     return 0;

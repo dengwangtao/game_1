@@ -20,7 +20,7 @@ public:
     s32 clean() override;
     s32 handleEvent(SDL_Event* event) override;
 
-
+private:
 };
 
 

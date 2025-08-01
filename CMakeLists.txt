@@ -9,6 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # 设置编译选项
 if (MSVC)
     add_compile_options(/W4)
+    add_compile_options(/utf-8)
 else()
     add_compile_options(-Wall -Wextra -Wpedantic)
 endif()

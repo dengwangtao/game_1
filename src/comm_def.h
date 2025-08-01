@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SDL_log.h>
-
+#include <cstring>
 
 using u64 = unsigned long long;
 using s64 = signed long long;
@@ -13,20 +13,19 @@ using u8 = unsigned char;
 using s8 = signed char;
 
 
+#if defined(_WIN32)
+    #define __SHORT_FILE__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
+#else
+    #define __SHORT_FILE__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
+#endif
+
 // # log相关宏定义
-#define LOG_DEBUG(fmt, ...) SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, fmt, ##__VA_ARGS__)
-#define LOG_INFO(fmt, ...) SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, fmt, ##__VA_ARGS__)
-#define LOG_WARN(fmt, ...) SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, fmt, ##__VA_ARGS__)
-#define LOG_ERROR(fmt, ...) SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, fmt, ##__VA_ARGS__)
+#define LOG_DEBUG(fmt, ...) SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "%s:%d " fmt, __SHORT_FILE__, __LINE__, ##__VA_ARGS__)
+#define LOG_INFO(fmt, ...) SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "%s:%d " fmt, __SHORT_FILE__, __LINE__, ##__VA_ARGS__)
+#define LOG_WARN(fmt, ...) SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "%s:%d " fmt, __SHORT_FILE__, __LINE__, ##__VA_ARGS__)
+#define LOG_ERROR(fmt, ...) SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "%s:%d " fmt, __SHORT_FILE__, __LINE__, ##__VA_ARGS__)
 
 
-
-#define DEF_Property(type, name) \
-public: \
-    type name() const { return name##_; } \
-    void set_##name(type value) { name##_ = value; } \
-private: \
-    type name##_ = {};
 
 #define DEF_Property_default(type, name, default_value) \
 public: \
@@ -34,3 +33,6 @@ public: \
     void set_##name(type value) { name##_ = value; } \
 private: \
     type name##_ = default_value;
+
+#define DEF_Property(type, name) \
+    DEF_Property_default(type, name, {})

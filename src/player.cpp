@@ -13,6 +13,10 @@ Player::~Player()
 s32 Player::UpdatePosition(s64 now_ms)
 {
     f64 dt = (now_ms - last_update_ms()) / 1000.0f;
+    if (last_update_ms() == 0)
+    {
+        dt = 0.0f;
+    }
 
     // 更新速度
     if (is_control_move())

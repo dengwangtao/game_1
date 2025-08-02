@@ -10,6 +10,7 @@
 class TextureManager : public Singleton<TextureManager>
 {
 public:
+    ~TextureManager();
     SDL_Texture* LoadTexture(const std::string& filename);
 
 private:

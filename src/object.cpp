@@ -22,12 +22,6 @@ Object::Object(ObjectType objtype, Scene *scene, Object* spawner)
 Object::~Object()
 {
     LOG_INFO("Destroy object: guid=%s", GUIDGen::ParseGUID(guid()).c_str());
-
-    if (texture())
-    {
-        LOG_INFO("Destroy texture");
-        SDL_DestroyTexture(texture());
-    }
 }
 
 s32 Object::init(const std::string &img_texture_path)
@@ -54,8 +48,8 @@ s32 Object::update(s64 now_ms)
 
 s32 Object::render()
 {
-    SDL_Rect rect = GetRect();
-    s32 ret = SDL_RenderCopy(G_GAME.renderer(), texture(), NULL, &rect);
+    SDL_FRect rect = GetRect();
+    s32 ret = SDL_RenderCopyF(G_GAME.renderer(), texture(), NULL, &rect);
     if (ret)
     {
         LOG_ERROR("Failed to render object: %s", SDL_GetError());
@@ -77,13 +71,13 @@ s32 Object::makeTexture(const std::string &file_path)
     }
     return 0;
 }
-SDL_Rect Object::GetRect() const
+SDL_FRect Object::GetRect() const
 {
-    return SDL_Rect{
-        static_cast<s32>(position().x),
-        static_cast<s32>(position().y),
-        static_cast<s32>(width()),
-        static_cast<s32>(height())
+    return SDL_FRect{
+        static_cast<f32>(position().x),
+        static_cast<f32>(position().y),
+        static_cast<f32>(width()),
+        static_cast<f32>(height())
     };
 }
 

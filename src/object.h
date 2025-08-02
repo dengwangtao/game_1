@@ -26,7 +26,7 @@ public:
     bool IsEnemy() const { return obj_type() == ObjectType::ENEMY; }
 
 
-    SDL_Rect GetRect() const;
+    SDL_FRect GetRect() const;
 
     std::string DebugString() const;
 

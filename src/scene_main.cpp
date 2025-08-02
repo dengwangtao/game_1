@@ -28,6 +28,8 @@ s32 SceneMain::init()
 }
 s32 SceneMain::update(s64 now_ms)
 {
+    Scene::update(now_ms);
+
     keyboardControl();
 
     // 遍历所有对象, update

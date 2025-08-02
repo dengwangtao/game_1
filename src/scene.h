@@ -17,7 +17,7 @@ public:
 	virtual ~Scene();
 
     virtual s32 init() = 0;
-    virtual s32 update(s64 now_ms) = 0;
+    virtual s32 update(s64 now_ms);
     virtual s32 render() = 0;
     virtual s32 clean() = 0;
     virtual s32 handleEvent(SDL_Event* event) = 0;
@@ -28,10 +28,12 @@ public:
 
     s32 addObject(Object* obj);
     s32 removeObject(Object* obj);
+    s32 markRemoveObject(Object* obj);
     Object* getObject(u64 guid);
 
 protected:
     std::unordered_map<u64, Object*> objects_;
+    std::vector<Object*> tobe_removed_objects_;
 };
 
 

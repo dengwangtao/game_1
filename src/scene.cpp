@@ -18,6 +18,16 @@ Scene::~Scene()
     LOG_DEBUG("Scene destroyed");
 }
 
+s32 Scene::update(s64 now_ms)
+{
+    for (auto* obj : tobe_removed_objects_)
+    {
+        removeObject(obj);
+    }
+
+    return 0;
+}
+
 s32 Scene::addObject(Object *obj)
 {
     if (obj == nullptr)
@@ -54,6 +64,15 @@ s32 Scene::removeObject(Object* obj)
     objects_.erase(it);
     LOG_INFO("Removing object with guid: %s", obj->DebugString().c_str());
     return 0;
+}
+
+s32 Scene::markRemoveObject(Object *obj)
+{
+    if (obj == nullptr)
+    {
+        return -1;
+    }
+    tobe_removed_objects_.push_back(obj);
 }
 
 Object* Scene::getObject(u64 guid)

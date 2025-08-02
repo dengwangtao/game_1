@@ -1,6 +1,14 @@
 #include "texture_mgr.h"
 #include "game.h"
 
+TextureManager::~TextureManager()
+{
+    for (auto& pair : textures_)
+    {
+        SDL_DestroyTexture(pair.second);
+    }
+}
+
 SDL_Texture *TextureManager::LoadTexture(const std::string &filename)
 {
     if (textures_.find(filename)!= textures_.end())

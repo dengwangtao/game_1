@@ -15,7 +15,7 @@ public:
     s32 UpdatePosition(s64 now_ms) override;
 
 protected:
-    DEF_Property_default(f32, speed, 600.0f); // Bullet speed
+    DEF_Property_default(f32, speed, 200.0f); // Bullet speed
     // DEF_Property_default(f32, damage, 10.0f); // Bullet damage
 
     // 当前移动方向

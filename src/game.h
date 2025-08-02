@@ -25,6 +25,10 @@ public:
     s32 update(s64 now_ms);
     s32 render();
 
+
+private:
+    s64 GetNowMs() const;
+
 private:
     DEF_Property_default(bool, inited, false);
     DEF_Property(s32, is_running);

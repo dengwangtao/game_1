@@ -29,7 +29,8 @@ s32 Game::run()
     while (is_running())
     {
         // 获取当前时间 ns
-        s64 now_ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+        s64 now_ms = GetNowMs();
+        set_now_ms(now_ms);
 
         set_frame_interval(1000.0f / frame_rate());
         
@@ -50,7 +51,7 @@ s32 Game::run()
         render();
         
         // 计算下一帧需要的时间
-        s64 frame_end_time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+        s64 frame_end_time = GetNowMs();
         s64 frame_time = frame_end_time - frame_start_time;
 
         // 控制帧率
@@ -100,6 +101,9 @@ s32 Game::init()
         LOG_ERROR("SDL_CreateRenderer error: %s", SDL_GetError());
         set_is_running(false);
     }
+
+    // 初始化时间
+    set_now_ms(GetNowMs());
 
     // 创建初始场景
     {
@@ -221,4 +225,9 @@ s32 Game::render()
     SDL_RenderPresent(renderer_);
 
     return 0;
+}
+
+s64 Game::GetNowMs() const
+{
+    return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }

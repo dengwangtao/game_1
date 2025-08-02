@@ -34,7 +34,7 @@ public: \
     type name() const { return name##_; } \
     type* mutable_##name() { return &name##_; } \
     void set_##name(type value) { name##_ = value; } \
-private: \
+protected: \
     type name##_ = default_value;
 
 #define DEF_Property(type, name) \

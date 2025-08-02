@@ -22,7 +22,7 @@ public:
     s32 changeScene(Scene* scene); // 切换场景
 
     s32 handleEvent(SDL_Event* event);
-    s32 update();
+    s32 update(s64 now_ms);
     s32 render();
 
 private:
@@ -35,6 +35,8 @@ private:
 
     DEF_Property_default(s32, window_width, 600);
     DEF_Property_default(s32, window_height, 800);
+
+    DEF_Property_default(s64, now_ms, 0); // 当前时间
 };
 
 

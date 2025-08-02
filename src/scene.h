@@ -15,7 +15,7 @@ public:
 	virtual ~Scene() = default;
 
     virtual s32 init() = 0;
-    virtual s32 update() = 0;
+    virtual s32 update(s64 now_ms) = 0;
     virtual s32 render() = 0;
     virtual s32 clean() = 0;
     virtual s32 handleEvent(SDL_Event* event) = 0;

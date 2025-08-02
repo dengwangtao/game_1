@@ -15,10 +15,12 @@ public:
     ~SceneMain() override;
 
     s32 init() override;
-    s32 update() override;
+    s32 update(s64 now_ms) override;
     s32 render() override;
     s32 clean() override;
     s32 handleEvent(SDL_Event* event) override;
+
+    s32 keyboardControl();
 
 private:
     DEF_Property_default(bool, inited, false);

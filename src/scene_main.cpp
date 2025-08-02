@@ -36,8 +36,8 @@ s32 SceneMain::init()
 
     s32 w, h;
     SDL_QueryTexture(player_->texture(), NULL, NULL, &w, &h);
-    player_->set_height(h);
-    player_->set_width(w);
+    player_->set_height(h / 5);
+    player_->set_width(w / 5);
 
     f32 px = (static_cast<f32>(G_GAME.window_width()) / 2 - static_cast<f32>(w) / 2);
     f32 py = (static_cast<f32>(G_GAME.window_height()) - h);
@@ -49,8 +49,11 @@ s32 SceneMain::init()
     set_inited(true);
     return 0;
 }
-s32 SceneMain::update()
+s32 SceneMain::update(s64 now_ms)
 {
+    keyboardControl();
+
+    player_->update(now_ms);
 
     return 0;
 }
@@ -77,8 +80,56 @@ s32 SceneMain::clean()
 
     return 0;
 }
-s32 SceneMain::handleEvent(SDL_Event* event)
+s32 SceneMain::handleEvent(SDL_Event*)
 {
+
+    return 0;
+}
+
+s32 SceneMain::keyboardControl()
+{
+    s32 keynums = 0;
+    auto key_state = SDL_GetKeyboardState(&keynums);
+
+    s32 dir_x = 0;
+    s32 dir_y = 0;
+
+    if (key_state[SDL_SCANCODE_W] && key_state[SDL_SCANCODE_S])
+    {
+        dir_y = 0;
+    }
+    else if (key_state[SDL_SCANCODE_W])
+    {
+        dir_y = -1;
+    }
+    else if (key_state[SDL_SCANCODE_S])
+    {
+        dir_y = 1;
+    }
+    
+    if (key_state[SDL_SCANCODE_A] && key_state[SDL_SCANCODE_D])
+    {
+        dir_x = 0;
+    }
+    else if (key_state[SDL_SCANCODE_A])
+    {
+        dir_x = -1;
+    }
+    else if (key_state[SDL_SCANCODE_D])
+    {
+        dir_x = 1;
+    }
+
+    if (dir_x != 0 || dir_y != 0)
+    {
+        player_->set_move_dir_x(dir_x);
+        player_->set_move_dir_y(dir_y);
+        player_->set_is_control_move(true);
+    }
+    else
+    {
+        player_->set_is_control_move(false); // 停止移动, 进入减速状态
+    }
 
     return 0;
 }

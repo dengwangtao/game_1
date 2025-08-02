@@ -1,6 +1,7 @@
 #include "game.h"
 #include "scene_main.h"
 
+#include <chrono>
 #include <SDL.h>
 #include <SDL_image.h>
 
@@ -27,6 +28,9 @@ s32 Game::run()
     
     while (is_running())
     {
+        // 获取当前时间ms
+        s64 now_ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+
         SDL_Event event;
 
         handleEvent(&event);
@@ -37,7 +41,7 @@ s32 Game::run()
             continue;
         }
         
-        update();
+        update(now_ms);
 
         render();
 
@@ -177,11 +181,11 @@ s32 Game::handleEvent(SDL_Event* event)
     }
     return 0;
 }
-s32 Game::update()
+s32 Game::update(s64 now_ms)
 {
     if (current_scene())
     {
-        current_scene()->update();
+        current_scene()->update(now_ms);
     }
 
     return 0;

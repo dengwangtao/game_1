@@ -28,8 +28,12 @@ s32 Game::run()
     
     while (is_running())
     {
-        // 获取当前时间ms
+        // 获取当前时间 ns
         s64 now_ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+
+        set_frame_interval(1000.0f / frame_rate());
+        
+        auto frame_start_time = now_ms;
 
         SDL_Event event;
 
@@ -44,7 +48,21 @@ s32 Game::run()
         update(now_ms);
 
         render();
+        
+        // 计算下一帧需要的时间
+        s64 frame_end_time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+        s64 frame_time = frame_end_time - frame_start_time;
 
+        // 控制帧率
+        if (frame_time < frame_interval())
+        {
+            SDL_Delay(static_cast<u32>(frame_interval() - frame_time));
+        }
+        else
+        {
+            // 掉帧
+            LOG_WARN("frame time %lld > frame interval %lld", frame_time, frame_interval());
+        }
     }
 
     return 0;

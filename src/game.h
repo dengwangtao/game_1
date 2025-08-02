@@ -37,6 +37,8 @@ private:
     DEF_Property_default(s32, window_height, 800);
 
     DEF_Property_default(s64, now_ms, 0); // 当前时间
+    DEF_Property_default(s32, frame_rate, 60); // 帧率
+    DEF_Property_default(f64, frame_interval, 0); // 帧间隔
 };
 
 

@@ -6,23 +6,41 @@
 #include "comm_def.h"
 
 #include <SDL.h>
+#include <unordered_map>
 
-
+class Object;
 class Scene
 {
 public:
 	Scene();
-	virtual ~Scene() = default;
+	virtual ~Scene();
 
     virtual s32 init() = 0;
     virtual s32 update(s64 now_ms) = 0;
     virtual s32 render() = 0;
     virtual s32 clean() = 0;
     virtual s32 handleEvent(SDL_Event* event) = 0;
+
+
+    template<typename T, typename... Args>
+    T* addObject(Args&&... args);
+
+    s32 addObject(Object* obj);
+    s32 removeObject(Object* obj);
+    Object* getObject(u64 guid);
+
+protected:
+    std::unordered_map<u64, Object*> objects_;
 };
 
 
 
-
+template<typename T, typename... Args>
+T* Scene::addObject(Args&&... args)
+{
+    T* obj = new T(std::forward<Args>(args)...);
+    addObject(obj);
+    return obj;
+}
 
 #endif // !SCENE_H

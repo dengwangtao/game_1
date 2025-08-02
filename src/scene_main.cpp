@@ -14,16 +14,12 @@ SceneMain::SceneMain()
 
 SceneMain::~SceneMain()
 {
-    if (player_)
-    {
-        delete player_;
-        LOG_INFO("Player deleted");
-    }
 }
 
 s32 SceneMain::init()
 {
-    player_ = new Player();
+    player_ = addObject<Player>(this);
+
     player_->set_texture(
         IMG_LoadTexture(G_GAME.renderer(), "../assets/image/SpaceShip.png")
     );
@@ -43,6 +39,8 @@ s32 SceneMain::init()
     f32 py = (static_cast<f32>(G_GAME.window_height()) - h);
     player_->mutable_position()->x = px;
     player_->mutable_position()->y = py;
+
+    addObject(player_);
 
     LOG_INFO("Player created: %s", player_->DebugString().c_str());
 
@@ -76,8 +74,7 @@ s32 SceneMain::render()
     return 0;
 }
 s32 SceneMain::clean()
-{
-
+{    
     return 0;
 }
 s32 SceneMain::handleEvent(SDL_Event*)
@@ -91,9 +88,9 @@ s32 SceneMain::keyboardControl()
     s32 keynums = 0;
     auto key_state = SDL_GetKeyboardState(&keynums);
 
+    // 移动相关
     s32 dir_x = 0;
     s32 dir_y = 0;
-
     if (key_state[SDL_SCANCODE_W] && key_state[SDL_SCANCODE_S])
     {
         dir_y = 0;
@@ -130,6 +127,19 @@ s32 SceneMain::keyboardControl()
     {
         player_->set_is_control_move(false); // 停止移动, 进入减速状态
     }
+
+
+
+    // 发射相关
+    if (key_state[SDL_SCANCODE_SPACE])
+    {
+        if (player_->canShoot())
+        {
+
+        }
+    }
+
+
 
     return 0;
 }

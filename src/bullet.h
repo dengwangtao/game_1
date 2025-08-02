@@ -6,7 +6,8 @@
 class Bullet : public Object
 {
 public:
-
+    using Object::Object;
+    
 private:
 
 };

@@ -26,7 +26,6 @@ private:
     DEF_Property_default(bool, inited, false);
 
     Player* player_ = nullptr;
-
 };
 
 

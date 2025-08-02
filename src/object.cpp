@@ -4,15 +4,19 @@
 #include "tools.h"
 #include "game.h"
 #include "guid_gen.h"
+#include "scene.h"
 
-Object::Object()
+Object::Object(Scene* scene)
     : guid_(GUIDGen::GenerateGUID(GUID_TYPE::GUID_PLAYER))
+    , scene_(scene)
 {
     LOG_INFO("Create object: guid=%s", GUIDGen::ParseGUID(guid()).c_str());
 }
 
 Object::~Object()
 {
+    LOG_INFO("Destroy object: guid=%s", GUIDGen::ParseGUID(guid()).c_str());
+
     if (texture())
     {
         LOG_INFO("Destroy texture");

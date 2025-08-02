@@ -5,6 +5,7 @@
 #include "comm_def.h"
 #include "scene.h"
 #include "singleton.h"
+#include "guid_gen.h"
 
 struct SDL_Window;
 struct SDL_Renderer;

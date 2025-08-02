@@ -4,6 +4,10 @@
 
 #include <cmath>
 
+Player::~Player()
+{
+}
+
 s32 Player::UpdatePosition(s64 now_ms)
 {
     f64 dt = (now_ms - last_update_ms()) / 1000.0f;
@@ -66,4 +70,16 @@ s32 Player::UpdatePosition(s64 now_ms)
     position_.y = Tools::clamp<f32>(position_.y, 0.0f, G_GAME.window_height() - height());
 
     return 0;
+}
+
+bool Player::canShoot() const
+{
+    s64 now_ms = G_GAME.now_ms();
+
+    if (now_ms >= shoot_last_time() + shoot_cooldown())
+    {
+        return true;
+    }
+
+    return false;
 }

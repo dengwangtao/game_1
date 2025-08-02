@@ -19,7 +19,7 @@ constexpr s32 GUID_SEQ_SHIFT = 0;
 constexpr s64 time20250801 = 1753977600; // 2025-08-01 00:00:00 UTC+8
 
 
-u64 GUIDGen::GenerateGUID(GUID_TYPE type)
+u64 GUIDGen::GenerateGUID(ObjectType type)
 {
     static s64 cur_s = 0; // 当前正在用的秒
     static u32 cur_seq = 0; // 当前秒内的序列号
@@ -30,18 +30,18 @@ u64 GUIDGen::GenerateGUID(GUID_TYPE type)
     {
         cur_seq = 0;
         cur_s = now_s;
-        LOG_INFO("New second: %lld", cur_s);
+        // LOG_INFO("New second: %lld", cur_s);
     }
     else if (cur_seq >= GUID_SEQ_MASK)
     {
         cur_s ++;
         cur_seq = 0;
-        LOG_INFO("New second: %lld", cur_s);
+        // LOG_INFO("New second: %lld", cur_s);
     }
     else
     {
         ++ cur_seq;
-        LOG_INFO("New seq: %d now_s: %lld cur_s: %lld cur_seq: %d", cur_seq, now_s, cur_s, cur_seq);
+        // LOG_INFO("New seq: %d now_s: %lld cur_s: %lld cur_seq: %d", cur_seq, now_s, cur_s, cur_seq);
     }
 
     u64 rel_s = cur_s - time20250801; // 相对时间戳
@@ -56,11 +56,11 @@ u64 GUIDGen::GenerateGUID(GUID_TYPE type)
 
 std::string GUIDGen::ParseGUID(u64 guid)
 {
-    GUID_TYPE type = static_cast<GUID_TYPE>((guid >> GUID_TYPE_SHIFT) & GUID_TYPE_MASK);
+    ObjectType type = static_cast<ObjectType>((guid >> GUID_TYPE_SHIFT) & GUID_TYPE_MASK);
     s64 rel_s = (guid >> GUID_TIMESTAMP_SHIFT) & GUID_TIMESTAMP_MASK;
     u32 seq = (guid >> GUID_SEQ_SHIFT) & GUID_SEQ_MASK;
     s64 abs_s = rel_s + time20250801; // 绝对时间戳
 
-    std::string str = std::string(GUID_TYPE_STR[type]) + "-" + std::to_string(abs_s) + "-" + std::to_string(seq);
+    std::string str = std::string(ObjectTypeNames[type]) + "-" + std::to_string(abs_s) + "-" + std::to_string(seq);
     return str;
 }

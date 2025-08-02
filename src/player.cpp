@@ -1,12 +1,14 @@
 #include "player.h"
 #include "tools.h"
 #include "game.h"
+#include "bullet.h"
 
 #include <cmath>
 
 Player::~Player()
 {
 }
+
 
 s32 Player::UpdatePosition(s64 now_ms)
 {
@@ -72,6 +74,25 @@ s32 Player::UpdatePosition(s64 now_ms)
     return 0;
 }
 
+s32 Player::init(const std::string& img_texture_path)
+{
+    Object::init(img_texture_path);
+    
+    // 设置size
+    s32 w, h;
+    SDL_QueryTexture(texture(), NULL, NULL, &w, &h);
+    set_height(h / 5);
+    set_width(w / 5);
+
+    // 设置初始位置
+    f32 px = (static_cast<f32>(G_GAME.window_width()) / 2 - static_cast<f32>(width()) / 2);
+    f32 py = (static_cast<f32>(G_GAME.window_height()) - height());
+    mutable_position()->x = px;
+    mutable_position()->y = py;
+
+    return 0;
+}
+
 bool Player::canShoot() const
 {
     s64 now_ms = G_GAME.now_ms();
@@ -82,4 +103,37 @@ bool Player::canShoot() const
     }
 
     return false;
+}
+
+s32 Player::shoot()
+{
+    if (! canShoot())
+    {
+        return -1;
+    }
+
+    auto* cur_scene = scene();
+    if (! cur_scene)
+    {
+        LOG_ERROR("cur_scene is null");
+        return -1;
+    }
+    auto* bullet = cur_scene->addObject<Bullet>(cur_scene, this);
+    if (! bullet)
+    {
+        LOG_ERROR("Failed to create bullet");
+        return -1;
+    }
+
+    bullet->init("../assets/image/bullet.png");
+
+    // 设置位置
+    bullet->mutable_position()->x = position().x + static_cast<f32>(width()) / 2 
+        - static_cast<f32>(bullet->width()) / 2;
+    bullet->mutable_position()->y = position().y - static_cast<f32>(bullet->height()) / 2;
+
+    
+
+    set_shoot_last_time(G_GAME.now_ms());
+    return 0;
 }

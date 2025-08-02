@@ -19,29 +19,8 @@ SceneMain::~SceneMain()
 s32 SceneMain::init()
 {
     player_ = addObject<Player>(this);
-
-    player_->set_texture(
-        IMG_LoadTexture(G_GAME.renderer(), "../assets/image/SpaceShip.png")
-    );
-
-    if (player_->texture() == nullptr)
-    {
-        LOG_ERROR("Failed to load texture");
-        return -1;
-    }
-
-    s32 w, h;
-    SDL_QueryTexture(player_->texture(), NULL, NULL, &w, &h);
-    player_->set_height(h / 5);
-    player_->set_width(w / 5);
-
-    f32 px = (static_cast<f32>(G_GAME.window_width()) / 2 - static_cast<f32>(w) / 2);
-    f32 py = (static_cast<f32>(G_GAME.window_height()) - h);
-    player_->mutable_position()->x = px;
-    player_->mutable_position()->y = py;
-
-    addObject(player_);
-
+    player_->init("../assets/image/SpaceShip.png");
+    
     LOG_INFO("Player created: %s", player_->DebugString().c_str());
 
     set_inited(true);
@@ -51,7 +30,11 @@ s32 SceneMain::update(s64 now_ms)
 {
     keyboardControl();
 
-    player_->update(now_ms);
+    // 遍历所有对象, update
+    for (auto& obj : objects_)
+    {
+        obj.second->update(now_ms);
+    }
 
     return 0;
 }
@@ -63,14 +46,11 @@ s32 SceneMain::render()
         return -1;
     }
 
-    if (player_ == nullptr)
+    for (auto& obj : objects_)
     {
-        LOG_ERROR("Player is nullptr");
-        return -1;
+        obj.second->render();
     }
 
-    SDL_Rect rect = player_->GetRect();
-    SDL_RenderCopy(G_GAME.renderer(), player_->texture(), NULL, &rect);
     return 0;
 }
 s32 SceneMain::clean()
@@ -135,7 +115,7 @@ s32 SceneMain::keyboardControl()
     {
         if (player_->canShoot())
         {
-
+            player_->shoot();
         }
     }
 

@@ -4,6 +4,7 @@
 
 
 #include "comm_def.h"
+#include "object_type.h"
 
 #include <SDL.h>
 #include <unordered_map>
@@ -38,7 +39,12 @@ protected:
 template<typename T, typename... Args>
 T* Scene::addObject(Args&&... args)
 {
-    T* obj = new T(std::forward<Args>(args)...);
+    static_assert(std::is_base_of<Object, T>::value, "T must be derived from Object");
+
+    // 获取类型
+    auto obj_type = ObjectTraits<T>::obj_type;
+
+    T* obj = new T(obj_type, std::forward<Args>(args)...);
     addObject(obj);
     return obj;
 }

@@ -4,11 +4,13 @@
 
 class Player final : public Object
 {
-
+    const static ObjectType ObjType = ObjectType::PLAYER;
 public:
     ~Player() override;
 
     using Object::Object;
+
+    s32 init(const std::string& img_texture_path="") override;
 
     bool canShoot() const;
     s32 shoot();

@@ -24,6 +24,16 @@ s32 Scene::addObject(Object *obj)
     {
         return -1;
     }
+
+    u64 guid = obj->guid();
+    if (objects_.find(guid) != objects_.end())
+    {
+        delete objects_[guid];
+        objects_.erase(guid);
+        LOG_WARN("Object with guid: %s already exists, removed it", guid);
+    }
+
+    LOG_INFO("Adding object with guid: %s", obj->DebugString().c_str());
     objects_[obj->guid()] = obj;
 
     return 0;
@@ -42,6 +52,7 @@ s32 Scene::removeObject(Object* obj)
     }
     delete it->second;
     objects_.erase(it);
+    LOG_INFO("Removing object with guid: %s", obj->DebugString().c_str());
     return 0;
 }
 

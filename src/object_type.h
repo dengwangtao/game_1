@@ -6,13 +6,15 @@ enum ObjectType
     PLAYER,
     ENEMY,
     BULLET,
+    ITEM
 };
 
-constexpr const char* ObjectTypeNames[] = { "NONE", "PLAYER", "ENEMY", "BULLET" };
+constexpr const char* ObjectTypeNames[] = { "NONE", "PLAYER", "ENEMY", "BULLET", "ITEM" };
 
 class Player;
 class Enemy;
 class Bullet;
+class Item;
 
 
 template<typename T>
@@ -37,4 +39,10 @@ template<>
 struct ObjectTraits<Bullet>
 {
     constexpr static ObjectType obj_type = ObjectType::BULLET;
+};
+
+template<>
+struct ObjectTraits<Item>
+{
+    constexpr static ObjectType obj_type = ObjectType::ITEM;
 };

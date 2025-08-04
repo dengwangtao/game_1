@@ -78,6 +78,11 @@ s32 Bullet::onCollision(Object* other)
         return 0;
     }
 
+    if (!other->IsPlayer() && !other->IsEnemy())
+    {
+        return 0;
+    }
+
     auto* self_spawner = originSpawner();
     auto* other_spawner = other->originSpawner();
     if (other_spawner == nullptr)

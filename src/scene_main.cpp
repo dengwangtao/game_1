@@ -20,6 +20,7 @@ SceneMain::~SceneMain()
 s32 SceneMain::init()
 {
     enemy_spawner_.init();
+    item_spawner_.init();
 
     player_ = addObject<Player>(this);
     player_->init("../assets/image/SpaceShip.png");
@@ -36,6 +37,7 @@ s32 SceneMain::update(s64 now_ms)
     keyboardControl();
 
     enemy_spawner_.update(now_ms);
+    item_spawner_.update(now_ms);
 
     // 遍历所有对象, update
     for (auto& obj : objects_)

@@ -2,6 +2,7 @@
 
 #include <random>
 #include <SDL.h>
+#include <type_traits>
 
 namespace Tools
 {
@@ -22,20 +23,50 @@ T clamp(T value, T min_value, T max_value)
     return value;
 }
 
+template<typename T, typename = void>
+struct DistributionTraits
+{
+    using type = std::uniform_int_distribution<T>;
+};
+
+template<typename T>
+struct DistributionTraits<T, std::enable_if_t<std::is_integral_v<T>>>
+{
+    using type = std::uniform_int_distribution<T>;
+};
+
+template<typename T>
+struct DistributionTraits<T, std::enable_if_t<std::is_floating_point_v<T>>>
+{
+    using type = std::uniform_real_distribution<T>;
+};
+
 
 // min_v <= result <= max_v
-template <typename T, typename DS=std::uniform_int_distribution<T>>
+// 随机生成函数
+template <typename T>
 T random(T min_v, T max_v)
 {
-    if (min_v >= max_v)
-    {
+    if (min_v >= max_v) {
         return min_v;
     }
-    static std::random_device rd;
-    static std::mt19937_64 e{rd()};
-    DS dist{min_v, max_v};
 
-    return dist(e);
+    using Dist = typename DistributionTraits<T>::type;
+
+    static thread_local std::random_device rd;
+    static thread_local std::mt19937_64 rng{rd()};
+
+    if constexpr (std::is_floating_point_v<T>)
+    {
+        // 为了确保 max_v 有可能被采样到，扩大一点右边界
+        Dist dist(min_v, std::nextafter(max_v, std::numeric_limits<T>::max()));
+        return dist(rng);
+    }
+    else
+    {
+        Dist dist(min_v, max_v); // 整数是闭区间
+        return dist(rng);
+    }
 }
 
 

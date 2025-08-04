@@ -8,11 +8,21 @@ s32 Bullet::init(const std::string& img_texture_path)
 
 
     // 子弹设置移动方向
-    if (spawner() && spawner()->IsPlayer())
+    if (spawner())
     {
-        // 玩家发射的子弹，向上发射
-        set_move_dir_x(0);
-        set_move_dir_y(-1);
+        if (spawner()->IsPlayer())
+        {
+            // 玩家发射的子弹，向上发射
+            set_move_dir_x(0);
+            set_move_dir_y(-1);
+        }
+        else if (spawner()->IsEnemy())
+        {
+            // 敌人发射的子弹，向下发射
+            // TODO 不是严格的向下，需要计算角度
+            set_move_dir_x(0);
+            set_move_dir_y(1);
+        }
     }
 
     // 设置size

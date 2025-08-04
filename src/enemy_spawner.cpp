@@ -1,6 +1,7 @@
 #include "enemy_spawner.h"
 #include "game.h"
 #include "tools.h"
+#include "enemy.h"
 
 EnemySpawner::EnemySpawner()
 {
@@ -35,5 +36,33 @@ s32 EnemySpawner::update(s64 now_ms)
 s32 EnemySpawner::spawn_enemy(s64 now_ms)
 {
     LOG_INFO("spawn_enemy...");
+    if (G_GAME.current_scene() == nullptr)
+    {
+        LOG_ERROR("current scene is nullptr");
+        return -1;
+    }
+
+    auto* curr_scene = G_GAME.current_scene();
+
+
+    auto* enemy = curr_scene->addObject<Enemy>(curr_scene);
+    
+    if (! enemy)
+    {
+        LOG_ERROR("addObject Enemy failed");
+        return -2;
+    }
+
+    enemy->init("../assets/image/insect-1.png");
+
+    // 设置位置
+    s32 random_x = Tools::random(0, G_GAME.window_width() - enemy->width());
+    s32 random_y = -enemy->height();
+
+    enemy->mutable_position()->x = random_x;
+    enemy->mutable_position()->y = random_y;
+
+    LOG_INFO("spawn_enemy x=%d, y=%d", random_x, random_y);
+
     return 0;
 }

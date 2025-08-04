@@ -5,6 +5,13 @@ s32 Enemy::init(const std::string& img_texture_path)
 {
     Object::init(img_texture_path);
 
+    // 设置size
+    s32 w, h;
+    SDL_QueryTexture(texture(), NULL, NULL, &w, &h);
+    set_height(h / 2);
+    set_width(w / 2);
+    LOG_INFO("Enemy init: %s", DebugString().c_str());
+
     return 0;
 }
 
@@ -28,7 +35,7 @@ s32 Enemy::UpdatePosition(s64 now_ms)
 
     // 边界检测
     auto this_rect = GetRect();
-    auto game_rect = SDL_FRect{0, 0, static_cast<f32>(G_GAME.window_width()), static_cast<f32>(G_GAME.window_height())};
+    auto game_rect = SDL_FRect{0, -static_cast<f32>(height()), static_cast<f32>(G_GAME.window_width()), static_cast<f32>(G_GAME.window_height() + height())};
     SDL_FRect result;
     bool is_intersect = SDL_IntersectFRect(&this_rect, &game_rect, &result);
     if (! is_intersect)

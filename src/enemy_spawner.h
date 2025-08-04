@@ -17,7 +17,7 @@ private:
 
 private:
     DEF_Property_default(s64, last_spawn_time, 0); // 上次生成的时间
-    DEF_Property_default(s32, spawn_max_interval, 5000); // 生成最大间隔
+    DEF_Property_default(s32, spawn_max_interval, 3000); // 生成最大间隔
     DEF_Property_default(s32, spawn_min_interval, 1000); // 生成最小间隔
     DEF_Property_default(s32, spawn_interval, 500); // 每次生成时， 计算下次的生成间隔
 };

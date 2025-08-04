@@ -5,11 +5,15 @@
 
 #include "comm_def.h"
 #include "object_type.h"
+#include "player.h"
 
 #include <SDL.h>
 #include <unordered_map>
+#include <unordered_set>
+#include <functional>
 
 class Object;
+class Player;
 class Scene
 {
 public:
@@ -31,8 +35,13 @@ public:
     s32 markRemoveObject(Object* obj);
     Object* getObject(u64 guid);
 
+    template<typename T>
+    s32 foreachObject(const std::function<s32(T&)> func);
+
+
 protected:
     std::unordered_map<u64, Object*> objects_;
+    std::unordered_set<u64> players_;
     std::vector<Object*> tobe_removed_objects_;
 };
 
@@ -49,6 +58,41 @@ T* Scene::addObject(Args&&... args)
     T* obj = new T(obj_type, std::forward<Args>(args)...);
     addObject(obj);
     return obj;
+}
+
+
+template<typename T>
+s32 Scene::foreachObject(const std::function<s32(T&)> func)
+{
+    if constexpr (std::is_same_v<T, Player>)
+    {
+        for (auto guid : players_)
+        {
+            auto* obj = getObject(guid);
+            if (obj != nullptr)
+            {
+                Player* player = static_cast<Player*>(obj);
+                if (func(*player))
+                {
+                    break;
+                }
+            }
+        }
+    }
+    else
+    {
+        for (auto& [_, obj] : objects_)
+        {
+            if (dynamic_cast<T*>(obj) != nullptr)
+            {
+                if (func(obj))
+                {
+                    break;
+                }
+            }
+        }
+    }
+    return 0;
 }
 
 #endif // !SCENE_H

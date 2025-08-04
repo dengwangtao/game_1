@@ -19,7 +19,6 @@ s32 Bullet::init(const std::string& img_texture_path)
         else if (spawner()->IsEnemy())
         {
             // 敌人发射的子弹，向下发射
-            // TODO 不是严格的向下，需要计算角度
             set_move_dir_x(0);
             set_move_dir_y(1);
         }
@@ -50,8 +49,8 @@ s32 Bullet::UpdatePosition(s64 now_ms)
         dt = 0.0f;
     }
 
-    position_.x += static_cast<f32>(move_dir_x()) * speed() * dt;
-    position_.y += static_cast<f32>(move_dir_y()) * speed() * dt;
+    position_.x += move_dir_x() * speed() * dt;
+    position_.y += move_dir_y() * speed() * dt;
 
     // 边界检测
     auto this_rect = GetRect();

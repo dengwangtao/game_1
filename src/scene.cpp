@@ -1,5 +1,6 @@
 #include "scene.h"
 #include "object.h"
+#include "player.h"
 
 Scene::Scene()
 {
@@ -14,6 +15,8 @@ Scene::~Scene()
         delete it->second;
     }
     objects_.clear();
+
+    players_.clear();
 
     LOG_DEBUG("Scene destroyed");
 }
@@ -46,6 +49,12 @@ s32 Scene::addObject(Object *obj)
     LOG_INFO("Adding object with guid: %s", obj->DebugString().c_str());
     objects_[obj->guid()] = obj;
 
+    if (obj->IsPlayer())
+    {
+        players_.insert(obj->guid());
+    }
+    
+
     return 0;
 }
 
@@ -61,8 +70,13 @@ s32 Scene::removeObject(Object* obj)
     {
         return -2;
     }
+    if (obj->IsPlayer())
+    {
+        players_.erase(obj->guid());
+    }
     delete it->second;
     objects_.erase(it);
+
     return 0;
 }
 
@@ -73,6 +87,7 @@ s32 Scene::markRemoveObject(Object *obj)
         return -1;
     }
     tobe_removed_objects_.push_back(obj);
+    return 0;
 }
 
 Object* Scene::getObject(u64 guid)

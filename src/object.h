@@ -27,6 +27,7 @@ public:
 
 
     SDL_FRect GetRect() const;
+    SDL_FPoint GetCenter() const;
 
     std::string DebugString() const;
 
@@ -44,6 +45,10 @@ protected:
     DEF_Property(SDL_FPoint, position); // 坐标
     DEF_Property(s32, width); // 宽度
     DEF_Property(s32, height); // 高度
+
+    // 当前移动方向
+    DEF_Property_default(f32, move_dir_x, 0); // 移动方向x
+    DEF_Property_default(f32, move_dir_y, 0); // 移动方向y
 
     DEF_Property(Object*, spawner); // 发射者
 };

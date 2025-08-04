@@ -49,7 +49,14 @@ s32 Object::update(s64 now_ms)
 s32 Object::render()
 {
     SDL_FRect rect = GetRect();
-    s32 ret = SDL_RenderCopyF(G_GAME.renderer(), texture(), NULL, &rect);
+    s32 ret = 0;
+    // ret = SDL_RenderCopyF(G_GAME.renderer(), texture(), NULL, &rect);
+    // 旋转
+    f32 dirx = move_dir_x();
+    f32 diry = move_dir_y();
+    f32 angle = atan2(diry, dirx) * 180.0f / M_PI - 90.0f;
+    ret = SDL_RenderCopyExF(G_GAME.renderer(), texture(), NULL, &rect, angle, NULL, SDL_FLIP_NONE);
+
     if (ret)
     {
         LOG_ERROR("Failed to render object: %s", SDL_GetError());
@@ -79,6 +86,11 @@ SDL_FRect Object::GetRect() const
         static_cast<f32>(width()),
         static_cast<f32>(height())
     };
+}
+
+SDL_FPoint Object::GetCenter() const
+{
+    return Tools::get_rect_center(GetRect());
 }
 
 std::string Object::DebugString() const

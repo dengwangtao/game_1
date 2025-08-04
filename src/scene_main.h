@@ -25,8 +25,7 @@ public:
 
 private:
     DEF_Property_default(bool, inited, false);
-
-    Player* player_ = nullptr;
+    DEF_Property_default(Player*, player, nullptr);
 
     EnemySpawner enemy_spawner_;
 };

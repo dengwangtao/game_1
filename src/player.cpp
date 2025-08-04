@@ -36,7 +36,6 @@ s32 Player::UpdatePosition(s64 now_ms)
         }
     }
 
-    // LOG_INFO("speed: %f direction: %d,%d", speed(), move_dir_x(), move_dir_y());
 
     // 若速度为0，直接返回，无需移动和包围盒更新
     if (speed() <= 0.0f)
@@ -45,8 +44,8 @@ s32 Player::UpdatePosition(s64 now_ms)
     }
 
     // 若方向为零向量，也无需移动
-    s32 dir_x = move_dir_x();
-    s32 dir_y = move_dir_y();
+    f32 dir_x = move_dir_x();
+    f32 dir_y = move_dir_y();
     if (dir_x == 0 && dir_y == 0)
     {
         return 0;
@@ -82,6 +81,9 @@ s32 Player::init(const std::string& img_texture_path)
 {
     Object::init(img_texture_path);
     
+    // 设置方向
+    set_move_dir_y(-1); // 向上
+
     // 设置size
     s32 w, h;
     SDL_QueryTexture(texture(), NULL, NULL, &w, &h);
@@ -131,12 +133,17 @@ s32 Player::shoot()
 
     bullet->init("../assets/image/bullet.png");
 
-    // 设置位置
-    bullet->mutable_position()->x = position().x + static_cast<f32>(width()) / 2 
-        - static_cast<f32>(bullet->width()) / 2;
-    bullet->mutable_position()->y = position().y - static_cast<f32>(bullet->height()) / 2;
 
+    // 计算子弹位置
+    auto born_pos = Tools::calculate_aligned_position(GetRect(), bullet->width(), bullet->height());
+
+    // 设置位置
+    bullet->mutable_position()->x = born_pos.x;
+    bullet->mutable_position()->y = born_pos.y;
     
+    // 设置方向, same as player
+    bullet->set_move_dir_x(move_dir_x());
+    bullet->set_move_dir_y(move_dir_y());
 
     set_shoot_last_time(G_GAME.now_ms());
     return 0;

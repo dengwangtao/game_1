@@ -1,9 +1,15 @@
 #include "enemy.h"
 #include "game.h"
+#include "tools.h"
+#include "bullet.h"
+#include <cmath>
 
 s32 Enemy::init(const std::string& img_texture_path)
 {
     Object::init(img_texture_path);
+
+    set_move_dir_x(0);
+    set_move_dir_y(1);
 
     // 设置size
     s32 w, h;
@@ -19,6 +25,8 @@ s32 Enemy::update(s64 now_ms)
 {
     Object::update(now_ms);
 
+    shoot();
+
     return 0;
 }
 
@@ -30,8 +38,8 @@ s32 Enemy::UpdatePosition(s64 now_ms)
         dt = 0.0f;
     }
 
-    position_.x += static_cast<f32>(move_dir_x()) * speed() * dt;
-    position_.y += static_cast<f32>(move_dir_y()) * speed() * dt;
+    position_.x += move_dir_x() * speed() * dt;
+    position_.y += move_dir_y() * speed() * dt;
 
     // 边界检测
     auto this_rect = GetRect();
@@ -43,5 +51,75 @@ s32 Enemy::UpdatePosition(s64 now_ms)
         LOG_INFO("Enemy out of game"); // 销毁
         scene()->markRemoveObject(this);
     }
+    return 0;
+}
+
+s32 Enemy::shoot()
+{   
+    if (G_GAME.now_ms() < shoot_last_time() + shoot_cooldown())
+    {
+        return 0;
+    }
+
+    bool is_shoot = Tools::random(0, 1);
+    if (! is_shoot)
+    {
+        return 0;
+    }
+
+    auto* cur_scene = scene();
+    if (! cur_scene)
+    {
+        LOG_ERROR("cur_scene is null");
+        return -1;
+    }
+
+    // 计算与玩家的角度
+    Player* p = nullptr;
+    cur_scene->foreachObject<Player>([&](Player& player) {
+        p = &player;
+        return 0;
+    });
+
+    if (!p)
+    {
+        LOG_WARN("No player");
+        return -2;
+    }
+
+    // 计算角度
+    f64 angle = atan2(p->GetCenter().y - GetCenter().y, p->GetCenter().x - GetCenter().x);
+    // 发射范围 左右45度
+    if (angle > M_PI / 4 * 3 || angle < M_PI / 4)
+    {
+        return 0;
+    }
+
+
+    auto* bullet = cur_scene->addObject<Bullet>(cur_scene, this);
+    if (! bullet)
+    {
+        LOG_ERROR("Failed to create bullet");
+        return -1;
+    }
+
+    bullet->init("../assets/image/bullet-1.png");
+
+
+    // 计算位置
+    auto born_pos = Tools::calculate_aligned_position(GetRect(), bullet->width(), bullet->height());
+
+    // 设置位置
+    bullet->mutable_position()->x = born_pos.x;
+    bullet->mutable_position()->y = born_pos.y;
+
+    // 设置方向
+    bullet->set_move_dir_x(cos(angle));
+    bullet->set_move_dir_y(sin(angle));
+    LOG_INFO("Enemy shoot: %s", bullet->DebugString().c_str());
+
+    set_shoot_last_time(G_GAME.now_ms());
+
+
     return 0;
 }

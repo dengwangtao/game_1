@@ -19,9 +19,6 @@ public:
     s32 UpdatePosition(s64 now_ms) override;
 
 private:
-    // 当前移动方向
-    DEF_Property_default(s32, move_dir_x, 0); // 移动方向x
-    DEF_Property_default(s32, move_dir_y, 0); // 移动方向y
     // 是否控制移动
     DEF_Property_default(bool, is_control_move, false); // 是否控制移动
 

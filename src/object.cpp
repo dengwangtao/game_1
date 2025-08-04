@@ -78,6 +78,20 @@ s32 Object::makeTexture(const std::string &file_path)
     }
     return 0;
 }
+Object *Object::originSpawner(int depth) const
+{
+    // 防止死递归
+    if (depth > 10)
+    {
+        LOG_ERROR("originSpawner depth too deep");
+        return nullptr;
+    }
+    if (spawner_ == nullptr)
+    {
+        return nullptr;
+    }
+    return spawner_->originSpawner(depth + 1);
+}
 SDL_FRect Object::GetRect() const
 {
     return SDL_FRect{

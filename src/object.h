@@ -21,6 +21,9 @@ public:
     virtual s32 clean() { return 0; }
     virtual s32 makeTexture(const std::string& file_path);
 
+    // 获取原始spawner
+    Object* originSpawner(int depth=0) const;
+
     bool IsPlayer() const { return obj_type() == ObjectType::PLAYER; }
     bool IsBullet() const { return obj_type() == ObjectType::BULLET; }
     bool IsEnemy() const { return obj_type() == ObjectType::ENEMY; }
@@ -51,4 +54,7 @@ protected:
     DEF_Property_default(f32, move_dir_y, 0); // 移动方向y
 
     DEF_Property(Object*, spawner); // 发射者
+
+    DEF_Property_default(s32, hp, 1); // 默认血量为1
+    DEF_Property_default(s32, attack, 0); // 攻击力
 };

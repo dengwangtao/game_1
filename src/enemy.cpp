@@ -18,6 +18,10 @@ s32 Enemy::init(const std::string& img_texture_path)
     set_width(w / 2);
     LOG_INFO("Enemy init: %s", DebugString().c_str());
 
+    // 设置血量
+    set_hp(3);
+    set_attack(1);
+
     return 0;
 }
 
@@ -117,6 +121,10 @@ s32 Enemy::shoot()
     bullet->set_move_dir_x(cos(angle));
     bullet->set_move_dir_y(sin(angle));
     LOG_INFO("Enemy shoot: %s", bullet->DebugString().c_str());
+
+
+    // 继承攻击力
+    bullet->set_attack(attack());
 
     set_shoot_last_time(G_GAME.now_ms());
 

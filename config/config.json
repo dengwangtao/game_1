@@ -1,0 +1,22 @@
+{
+    "player":
+    {
+        "hp": 10,
+        "attack": 1,
+        "texture": "../assets/image/SpaceShip.png"
+    },
+    "enemy":
+    {
+        "hp": 8,
+        "attack": 1,
+        "texture": "../assets/image/insect-1.png"
+    },
+    "bullet-player":
+    {
+        "texture": "../assets/image/bullet-d.png"
+    },
+    "bullet-enemy":
+    {
+        "texture": "../assets/image/bullet-1.png"
+    }
+}

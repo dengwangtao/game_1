@@ -96,6 +96,11 @@ s32 Player::init(const std::string& img_texture_path)
     mutable_position()->x = px;
     mutable_position()->y = py;
 
+
+    // 设置血量
+    set_hp(10);
+    set_attack(1);
+
     return 0;
 }
 
@@ -144,6 +149,9 @@ s32 Player::shoot()
     // 设置方向, same as player
     bullet->set_move_dir_x(move_dir_x());
     bullet->set_move_dir_y(move_dir_y());
+
+    // 继承攻击力
+    bullet->set_attack(attack());
 
     set_shoot_last_time(G_GAME.now_ms());
     return 0;

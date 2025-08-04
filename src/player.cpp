@@ -147,8 +147,8 @@ s32 Player::shoot()
     bullet->mutable_position()->y = born_pos.y;
     
     // 设置方向, same as player
-    bullet->set_move_dir_x(move_dir_x());
-    bullet->set_move_dir_y(move_dir_y());
+    // bullet->set_move_dir_x(move_dir_x());
+    // bullet->set_move_dir_y(move_dir_y());
 
     // 继承攻击力
     bullet->set_attack(attack());

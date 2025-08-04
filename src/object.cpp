@@ -63,11 +63,28 @@ s32 Object::render()
     SDL_FRect rect = GetRect();
     s32 ret = 0;
     // ret = SDL_RenderCopyF(G_GAME.renderer(), texture(), NULL, &rect);
-    // 旋转
-    f32 dirx = move_dir_x();
-    f32 diry = move_dir_y();
-    f32 angle = atan2(diry, dirx) * 180.0f / M_PI - 90.0f;
-    ret = SDL_RenderCopyExF(G_GAME.renderer(), texture(), NULL, &rect, angle, NULL, SDL_FLIP_NONE);
+
+    if (IsBullet())
+    {
+        // 旋转
+        f32 dirx = move_dir_x();
+        f32 diry = move_dir_y();
+        f32 angle = atan2(diry, dirx) * 180.0f / M_PI - 90.0f;
+        ret = SDL_RenderCopyExF(G_GAME.renderer(), texture(), NULL, &rect, angle, NULL, SDL_FLIP_NONE);
+    }
+    else if (IsPlayer())
+    {
+        // 垂直翻转
+        ret = SDL_RenderCopyExF(G_GAME.renderer(), texture(), NULL, &rect, 0, NULL, SDL_FLIP_VERTICAL);
+    }
+    else if (IsEnemy())
+    {
+        ret = SDL_RenderCopyExF(G_GAME.renderer(), texture(), NULL, &rect, 0, NULL, SDL_FLIP_NONE);
+    }
+    else
+    {
+        ret = SDL_RenderCopyF(G_GAME.renderer(), texture(), NULL, &rect);
+    }
 
     if (ret)
     {

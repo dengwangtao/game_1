@@ -179,7 +179,7 @@ s32 Object::onDestroy()
     ani->mutable_position()->x = born_pos.x;
     ani->mutable_position()->y = born_pos.y;
 
-    ani->play(800);
+    ani->play(1000);
 
     return 0;
 }

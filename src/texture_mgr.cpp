@@ -5,6 +5,7 @@ TextureManager::~TextureManager()
 {
     for (auto& pair : textures_)
     {
+        LOG_INFO("Destroying texture: %s", pair.first.c_str());
         SDL_DestroyTexture(pair.second);
     }
 }

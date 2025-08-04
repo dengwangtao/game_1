@@ -13,7 +13,6 @@ Scene::~Scene()
 {
     for (auto it = objects_.begin(); it != objects_.end(); ++it)
     {
-        it->second->onDestroy();
         delete it->second;
     }
     objects_.clear();
@@ -58,9 +57,8 @@ s32 Scene::addObject(Object *obj)
     u64 guid = obj->guid();
     if (objects_.find(guid) != objects_.end())
     {
-        delete objects_[guid];
-        objects_.erase(guid);
-        LOG_WARN("Object with guid: %lld already exists, removed it", guid);
+        LOG_ERROR("Object with guid: %lld already exists, removed it", guid);
+        return -2;
     }
 
     LOG_INFO("Adding object with guid: %s", obj->DebugString().c_str());

@@ -134,8 +134,9 @@ s32 Game::clean()
     // 清理当前场景
     if (current_scene())
     {
-        current_scene()->clean();
-        delete current_scene();
+        auto scene = current_scene();
+        scene->clean();
+        delete scene;
         set_current_scene(nullptr);
         LOG_DEBUG("clean current scene");
     }
@@ -204,7 +205,6 @@ s32 Game::handleEvent(SDL_Event* event)
         {
             LOG_DEBUG("SDL_QUIT");
             set_is_running(false);
-            return 0;
         }
         if (current_scene())
         {

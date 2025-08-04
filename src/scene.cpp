@@ -24,7 +24,7 @@ s32 Scene::update(s64 now_ms)
     {
         removeObject(obj);
     }
-
+    tobe_removed_objects_.clear();
     return 0;
 }
 
@@ -55,6 +55,7 @@ s32 Scene::removeObject(Object* obj)
     {
         return -1;
     }
+    LOG_INFO("Removing object with guid: %s", obj->DebugString().c_str());
     auto it = objects_.find(obj->guid());
     if (it == objects_.end())
     {
@@ -62,7 +63,6 @@ s32 Scene::removeObject(Object* obj)
     }
     delete it->second;
     objects_.erase(it);
-    LOG_INFO("Removing object with guid: %s", obj->DebugString().c_str());
     return 0;
 }
 

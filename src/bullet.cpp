@@ -20,6 +20,7 @@ s32 Bullet::init(const std::string& img_texture_path)
     SDL_QueryTexture(texture(), NULL, NULL, &w, &h);
     set_height(h);
     set_width(w);
+    LOG_INFO("Bullet init: %s", DebugString().c_str());
     
     return 0;
 }

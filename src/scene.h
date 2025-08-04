@@ -35,6 +35,9 @@ public:
     s32 markRemoveObject(Object* obj);
     Object* getObject(u64 guid);
 
+    // 碰撞检测
+    s32 updateCollision();
+
     template<typename T>
     s32 foreachObject(const std::function<s32(T&)> func);
 

@@ -2,7 +2,7 @@
 #include "tools.h"
 #include "game.h"
 #include "bullet.h"
-
+#include "scene_main.h"
 #include <cmath>
 
 Player::~Player()
@@ -154,5 +154,43 @@ s32 Player::shoot()
     bullet->set_attack(attack());
 
     set_shoot_last_time(G_GAME.now_ms());
+    return 0;
+}
+
+
+s32 Player::onDestroy()
+{
+    auto* cur_scene = scene();
+    if (! cur_scene)
+    {
+        LOG_ERROR("cur_scene is null");
+        return -1;
+    }
+
+    auto* cur_main_scene = dynamic_cast<SceneMain*>(cur_scene);
+    if (cur_main_scene)
+    {
+        cur_main_scene->set_player(nullptr);
+        // TODO: game over
+    }
+
+    return 0;
+}
+
+s32 Player::onCollision(Object* other)
+{
+    if (! other)
+    {
+        return 0;
+    }
+
+    if (other->IsEnemy())
+    {
+        other->set_hp(other->hp() - attack());
+        set_hp(hp() - other->attack());
+
+        LOG_INFO("Player:%s collides with Enemy:%s", DebugString().c_str(), other->DebugString().c_str());
+    }
+
     return 0;
 }

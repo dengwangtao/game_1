@@ -65,3 +65,52 @@ s32 Bullet::UpdatePosition(s64 now_ms)
 
     return 0;
 }
+
+s32 Bullet::onCollision(Object* other)
+{
+    if (! other)
+    {
+        return 0;
+    }
+
+    if (other->IsBullet())
+    {
+        return 0;
+    }
+
+    auto* self_spawner = originSpawner();
+    auto* other_spawner = other->originSpawner();
+    if (other_spawner == nullptr)
+    {
+        other_spawner = other;
+    }
+
+    if (self_spawner == nullptr)
+    {
+        LOG_ERROR("bullet:%s originSpawner is nullptr", DebugString().c_str());
+        return -1;
+    }
+
+    if (self_spawner == other_spawner)
+    {
+        // 同一个对象发射的子弹，不处理
+        return 0;
+    }
+
+    // 同类型对象不处理
+    if (self_spawner->obj_type() == other_spawner->obj_type())
+    {
+        return 0;
+    }
+
+    auto old_hp = other->hp();
+
+    // 子弹碰到其他对象，销毁
+    set_hp(0);
+
+    other->set_hp(other->hp() - attack());
+
+    LOG_INFO("Bullet:%s hit Object:%s, hp: %d->%d", DebugString().c_str(), other->DebugString().c_str(), old_hp, other->hp());
+
+    return 0;
+}

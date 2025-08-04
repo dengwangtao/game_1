@@ -1,6 +1,7 @@
 #include "scene.h"
 #include "object.h"
 #include "player.h"
+#include "tools.h"
 
 Scene::Scene()
 {
@@ -11,7 +12,7 @@ Scene::~Scene()
 {
     for (auto it = objects_.begin(); it != objects_.end(); ++it)
     {
-        it->second->clean();
+        it->second->onDestroy();
         delete it->second;
     }
     objects_.clear();
@@ -23,6 +24,8 @@ Scene::~Scene()
 
 s32 Scene::update(s64 now_ms)
 {
+    updateCollision();
+
     for (auto* obj : tobe_removed_objects_)
     {
         removeObject(obj);
@@ -70,6 +73,9 @@ s32 Scene::removeObject(Object* obj)
     {
         return -2;
     }
+
+    obj->onDestroy();
+
     if (obj->IsPlayer())
     {
         players_.erase(obj->guid());
@@ -86,6 +92,7 @@ s32 Scene::markRemoveObject(Object *obj)
     {
         return -1;
     }
+    obj->set_is_marked_for_removal(true);
     tobe_removed_objects_.push_back(obj);
     return 0;
 }
@@ -98,4 +105,30 @@ Object* Scene::getObject(u64 guid)
         return nullptr;
     }
     return it->second;
+}
+
+s32 Scene::updateCollision()
+{
+    for (auto it = objects_.begin(); it != objects_.end(); ++it)
+    {
+        auto obj = it->second;
+        for (auto it2 = std::next(it); it2 != objects_.end(); ++it2)
+        {
+            auto obj2 = it2->second;
+            if (obj->is_marked_for_removal() || obj2->is_marked_for_removal())
+            {
+                continue;
+            }
+            auto rect1 = obj->GetRect();
+            auto rect2 = obj2->GetRect();
+            if (Tools::is_rect_overlap(rect1, rect2))
+            {
+                obj->onCollision(obj2);
+                obj2->onCollision(obj);
+            }
+        }
+    }
+
+
+    return 0;
 }

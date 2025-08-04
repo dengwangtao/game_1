@@ -16,7 +16,15 @@ Object::Object(ObjectType objtype, Scene *scene, Object* spawner)
     , spawner_(spawner)
 {
     set_guid(GUIDGen::GenerateGUID(obj_type()));
-    LOG_INFO("Create object: guid=%s", GUIDGen::ParseGUID(guid()).c_str());
+    if (! spawner_)
+    {
+        set_spawner(this);
+    }
+
+    LOG_INFO("Create object: guid=%s, spawner=%s, objtype=%d",
+        GUIDGen::ParseGUID(guid()).c_str(),
+        spawner_->DebugString().c_str(),
+        static_cast<int>(obj_type_));
 }
 
 Object::~Object()
@@ -38,6 +46,10 @@ s32 Object::init(const std::string &img_texture_path)
 
 s32 Object::update(s64 now_ms)
 {
+    if (hp() <= 0)
+    {
+        scene()->markRemoveObject(this);
+    }
 
     UpdatePosition(now_ms);
 
@@ -86,11 +98,11 @@ Object *Object::originSpawner(int depth) const
         LOG_ERROR("originSpawner depth too deep");
         return nullptr;
     }
-    if (spawner_ == nullptr)
+    if (spawner() == nullptr || spawner() == this)
     {
-        return nullptr;
+        return spawner();
     }
-    return spawner_->originSpawner(depth + 1);
+    return spawner()->originSpawner(depth + 1);
 }
 SDL_FRect Object::GetRect() const
 {

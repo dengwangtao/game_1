@@ -65,5 +65,11 @@ inline SDL_FPoint calculate_aligned_position(const SDL_FRect& rect, float w, flo
 }
 
 
+// 判断两个矩形是否重叠
+inline bool is_rect_overlap(const SDL_FRect& rect1, const SDL_FRect& rect2)
+{
+    return SDL_HasIntersectionF(&rect1, &rect2);
+}
+
 
 } // namespace Tools

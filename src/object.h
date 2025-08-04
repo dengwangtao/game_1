@@ -18,8 +18,12 @@ public:
     virtual s32 init(const std::string& img_texture_path="");
     virtual s32 update(s64 now_ms);
     virtual s32 render();
-    virtual s32 clean() { return 0; }
     virtual s32 makeTexture(const std::string& file_path);
+
+    virtual bool collidesWith(Object* other) const { return true; };
+    virtual s32 onCollision(Object* other) { return 0; }
+
+    virtual s32 onDestroy() { return 0; }
 
     // 获取原始spawner
     Object* originSpawner(int depth=0) const;
@@ -54,6 +58,8 @@ protected:
     DEF_Property_default(f32, move_dir_y, 0); // 移动方向y
 
     DEF_Property(Object*, spawner); // 发射者
+
+    DEF_Property_default(bool, is_marked_for_removal, false); // 是否被标记为删除
 
     DEF_Property_default(s32, hp, 1); // 默认血量为1
     DEF_Property_default(s32, attack, 0); // 攻击力

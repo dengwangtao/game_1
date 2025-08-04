@@ -15,7 +15,7 @@ public:
 
     virtual ~Object();
 
-    virtual s32 init(const std::string& img_texture_path="");
+    virtual s32 init(const std::string& img_texture_path);
     virtual s32 update(s64 now_ms);
     virtual s32 render();
     virtual s32 makeTexture(const std::string& file_path);
@@ -31,6 +31,8 @@ public:
     bool IsPlayer() const { return obj_type() == ObjectType::PLAYER; }
     bool IsBullet() const { return obj_type() == ObjectType::BULLET; }
     bool IsEnemy() const { return obj_type() == ObjectType::ENEMY; }
+    bool IsItem() const { return obj_type() == ObjectType::ITEM; }
+    bool IsShield() const { return obj_type() == ObjectType::SHIELD; }
 
 
     SDL_FRect GetRect() const;

@@ -3,9 +3,9 @@
 #include "object.h"
 
 
-class Bullet : public Object
+class Shield : public Object
 {
-    const static ObjectType ObjType = ObjectType::BULLET;
+    const static ObjectType ObjType = ObjectType::SHIELD;
 public:
     using Object::Object;
 
@@ -16,8 +16,8 @@ public:
 
     s32 UpdatePosition(s64 now_ms) override;
 
+    s32 onDestroy() override;
+
 protected:
-    DEF_Property_default(f32, speed, 500.0f); // Bullet speed
-    // DEF_Property_default(f32, damage, 10.0f); // Bullet damage
 
 };

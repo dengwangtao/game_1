@@ -115,7 +115,7 @@ s32 Enemy::shoot()
     }
 
 
-    auto* bullet = cur_scene->addObject<Bullet>(cur_scene, this);
+    auto* bullet = cur_scene->addObject<Bullet>(this);
     if (! bullet)
     {
         LOG_ERROR("Failed to create bullet");

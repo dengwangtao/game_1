@@ -78,7 +78,7 @@ s32 Bullet::onCollision(Object* other)
         return 0;
     }
 
-    if (!other->IsPlayer() && !other->IsEnemy())
+    if (!other->IsPlayer() && !other->IsEnemy() && !other->IsShield())
     {
         return 0;
     }

@@ -2,6 +2,8 @@
 
 #include "object.h"
 
+class Shield;
+
 class Player final : public Object
 {
     const static ObjectType ObjType = ObjectType::PLAYER;
@@ -10,7 +12,7 @@ public:
 
     using Object::Object;
 
-    s32 init(const std::string& img_texture_path="") override;
+    s32 init(const std::string& img_texture_path) override;
     s32 onDestroy() override;
 
     s32 onCollision(Object* other) override;
@@ -20,6 +22,8 @@ public:
 
 
     s32 UpdatePosition(s64 now_ms) override;
+
+    s32 addShield();
 
 private:
     // 是否控制移动
@@ -34,4 +38,7 @@ private:
     // 发射相关
     DEF_Property_default(s32, shoot_cooldown, 200); // 射击冷却时间, 单位: ms
     DEF_Property_default(s64, shoot_last_time, 0); // 上次射击时间
+
+    DEF_Property_default(Shield*, shield, nullptr); // 盾牌
+
 };

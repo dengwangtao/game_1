@@ -100,17 +100,25 @@ s32 Item::initItem(ItemType type)
 
 s32 Item::applyEffect(Object *other)
 {
+    if (! other->IsPlayer())
+    {
+        return 0;
+    }
+
+    auto* player = static_cast<Player*>(other);
+
     switch (type())
     {
     case ItemType::ITEM_HEALTH:
     {
         // 给player加血
-        other->set_hp(other->hp() + 1);
+        player->set_hp(player->hp() + 1);
         break;
     }
     case ItemType::ITEM_SHIELD:
     {
         // TODO: 添加盾牌效果
+        player->addShield();
         break;
     }
     case ItemType::ITEM_TIME:

@@ -45,7 +45,7 @@ s32 ItemSpawner::spawn_item(s64 now_ms)
     auto* curr_scene = G_GAME.current_scene();
 
 
-    auto* item = curr_scene->addObject<Item>(curr_scene);
+    auto* item = curr_scene->addObject<Item>();
     
     if (! item)
     {

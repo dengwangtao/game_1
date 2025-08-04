@@ -38,7 +38,7 @@ s32 Object::init(const std::string &img_texture_path)
     s32 ret = makeTexture(img_texture_path);
     if (ret)
     {
-        LOG_ERROR("Failed to load texture");
+        LOG_ERROR("Failed to load texture: %s", img_texture_path.c_str());
         return ret;
     }
 
@@ -106,7 +106,7 @@ s32 Object::makeTexture(const std::string &file_path)
 
     if (texture() == nullptr)
     {
-        LOG_ERROR("Failed to load texture");
+        LOG_ERROR("Failed to load texture: %s", file_path.c_str());
         return -1;
     }
     return 0;
@@ -165,7 +165,7 @@ s32 Object::renderHP()
     }
 
     s32 ret = 0;
-    auto* heart_texture = G_TEXTURE_MGR.LoadTexture("../assets/image/Health UI Black.png");
+    auto* heart_texture = G_TEXTURE_MGR.LoadTexture("../assets/image/hp.png");
     if (heart_texture == nullptr)
     {
         LOG_ERROR("Failed to load texture");
@@ -198,6 +198,11 @@ s32 Object::renderHP()
                 static_cast<f32>(width()),
                 static_cast<f32>(total_h)
             };
+        }
+        else
+        {
+            LOG_ERROR("Not a player or enemy");
+            return -1;
         }
 
         auto born_pos = Tools::calculate_aligned_position(draw_rect, total_w, total_h);

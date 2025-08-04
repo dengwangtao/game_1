@@ -45,7 +45,7 @@ s32 EnemySpawner::spawn_enemy(s64 now_ms)
     auto* curr_scene = G_GAME.current_scene();
 
 
-    auto* enemy = curr_scene->addObject<Enemy>(curr_scene);
+    auto* enemy = curr_scene->addObject<Enemy>();
     
     if (! enemy)
     {

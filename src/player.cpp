@@ -3,6 +3,7 @@
 #include "game.h"
 #include "bullet.h"
 #include "scene_main.h"
+#include "shield.h"
 #include <cmath>
 
 Player::~Player()
@@ -77,6 +78,32 @@ s32 Player::UpdatePosition(s64 now_ms)
     return 0;
 }
 
+s32 Player::addShield()
+{
+    if (shield())
+    {
+        shield()->set_hp(shield()->hp() + 1);
+    }
+    else
+    {
+        auto* cur_scene = scene();
+        auto* sd = cur_scene->addObject<Shield>(this);
+        if (sd)
+        {
+            sd->init("../assets/image/shield.png");
+
+            set_shield(sd);
+        }
+        else
+        {
+            LOG_ERROR("Failed to create shield");
+            return -1;
+        }
+    }
+
+    return 0;
+}
+
 s32 Player::init(const std::string& img_texture_path)
 {
     Object::init(img_texture_path);
@@ -129,7 +156,7 @@ s32 Player::shoot()
         LOG_ERROR("cur_scene is null");
         return -1;
     }
-    auto* bullet = cur_scene->addObject<Bullet>(cur_scene, this);
+    auto* bullet = cur_scene->addObject<Bullet>(this);
     if (! bullet)
     {
         LOG_ERROR("Failed to create bullet");

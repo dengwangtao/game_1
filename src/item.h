@@ -12,7 +12,7 @@ class Item : public Object
 public:
     using Object::Object;
 
-    s32 init(const std::string& img_texture_path="") override;
+    s32 init(const std::string& img_texture_path) override;
     s32 update(s64 now_ms) override;
 
     s32 onCollision(Object* other) override;

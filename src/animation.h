@@ -13,7 +13,7 @@ public:
 
     virtual ~Animation();
 
-    virtual s32 init(const std::string& img_texture_path="");
+    virtual s32 init(const std::string& img_texture_path);
     virtual s32 play(s64 duration_ms);
     virtual s32 update(s64 now_ms);
     virtual s32 render();

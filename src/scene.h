@@ -73,7 +73,7 @@ T* Scene::addObject(Args&&... args)
     // 获取类型
     auto obj_type = ObjectTraits<T>::obj_type;
 
-    T* obj = new T(obj_type, std::forward<Args>(args)...);
+    T* obj = new T(obj_type, this, std::forward<Args>(args)...);
     addObject(obj);
     return obj;
 }

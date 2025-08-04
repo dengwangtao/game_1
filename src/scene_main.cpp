@@ -22,7 +22,7 @@ s32 SceneMain::init()
     enemy_spawner_.init();
     item_spawner_.init();
 
-    player_ = addObject<Player>(this);
+    player_ = addObject<Player>();
     player_->init("../assets/image/SpaceShip.png");
     
     LOG_INFO("Player created: %s", player_->DebugString().c_str());

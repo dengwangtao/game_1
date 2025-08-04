@@ -87,6 +87,22 @@ s32 Item::UpdatePosition(s64 now_ms)
     return 0;
 }
 
+s32 Item::initItem(ItemType type)
+{
+    auto name = ItemTypes::GetItemName(type);
+    auto texture_path = ItemTypes::GetItemFile(type);
+    s32 ret = init(std::string(texture_path));
+    set_type(type);
+
+    LOG_INFO("Item init: %s", DebugString().c_str());
+    return ret;
+}
+
+s32 Item::applyEffect(Object *other)
+{
+    return 0;
+}
+
 s32 Item::onCollision(Object* other)
 {
     if (! other->IsPlayer())

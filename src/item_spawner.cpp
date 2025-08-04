@@ -53,7 +53,14 @@ s32 ItemSpawner::spawn_item(s64 now_ms)
         return -2;
     }
 
-    item->init("../assets/image/bonus_life.png");
+    auto item_type = Tools::random(ITEM_TYPE_MIN, ITEM_TYPE_MAX);
+
+    s32 ret = item->initItem(static_cast<ItemType>(item_type));
+    if (ret)
+    {
+        curr_scene->markRemoveObject(item);
+        LOG_ERROR("initItem failed, ret=%d", ret);
+    }
 
     // 设置位置
     s32 random_x = Tools::random(0, G_GAME.window_width() - item->width());

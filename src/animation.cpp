@@ -59,6 +59,10 @@ s32 Animation::play(s64 duration_ms)
     set_duration_ms(duration_ms);
 
     set_started(true);
+
+    LOG_INFO("Animation play: %s", DebugString().c_str());
+
+    return 0;
 }
 
 s32 Animation::update(s64 now_ms)
@@ -78,7 +82,7 @@ s32 Animation::update(s64 now_ms)
 
         if (cur_frame >= frame_count())
         {
-            set_current_frame(frame_count() - 1);
+            cur_frame = frame_count() - 1;
             set_started(false);
         }
         set_current_frame(cur_frame);

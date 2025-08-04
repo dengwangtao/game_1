@@ -5,6 +5,7 @@
 
 #include "game.h"
 #include "player.h"
+#include "animation.h"
 
 
 SceneMain::SceneMain()
@@ -55,6 +56,11 @@ s32 SceneMain::render()
     for (auto& obj : objects_)
     {
         obj.second->render();
+    }
+
+    for (auto& ani : animations_)
+    {
+        ani->render();
     }
 
     return 0;

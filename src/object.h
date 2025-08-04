@@ -41,6 +41,8 @@ public:
     // 移动相关
     virtual s32 UpdatePosition(s64 now_ms);
 
+    s32 renderHP();
+
 protected:
     DEF_Property(Scene*, scene); // 所属场景
     DEF_Property(u64, guid); // 全局唯一标识符

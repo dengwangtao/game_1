@@ -87,6 +87,9 @@ s32 Object::render()
         ret = SDL_RenderCopyF(G_GAME.renderer(), texture(), NULL, &rect);
     }
 
+    renderHP();
+
+
     if (ret)
     {
         LOG_ERROR("Failed to render object: %s", SDL_GetError());
@@ -146,6 +149,58 @@ std::string Object::DebugString() const
 
 s32 Object::UpdatePosition(s64 now_ms)
 {
+    return 0;
+}
+
+s32 Object::renderHP()
+{
+    static const s32 heart_w = 16;
+    static const s32 heart_h = 16;
+    static const s32 gap = 2;
+    static const s32 hearts_per_line = 4;
+
+    s32 ret = 0;
+    if (IsPlayer() || IsEnemy())
+    {
+        auto* heart_texture = G_TEXTURE_MGR.LoadTexture("../assets/image/Health UI Black.png");
+        if (heart_texture == nullptr)
+        {
+            LOG_ERROR("Failed to load texture");
+        }
+        else
+        {
+            s32 cur_hp = hp();
+
+            s32 lines = (cur_hp + hearts_per_line - 1) / hearts_per_line;
+
+            s32 total_w = std::min(cur_hp, hearts_per_line) * heart_w + (std::min(cur_hp, hearts_per_line) - 1) * gap;
+            s32 total_h = lines * heart_h + (lines - 1) * gap;
+
+            auto draw_rect = SDL_FRect {
+                position().x,
+                position().y + height(), // 渲染在对象下方
+                static_cast<f32>(width()),
+                static_cast<f32>(total_h)
+            };
+
+            auto born_pos = Tools::calculate_aligned_position(draw_rect, total_w, total_h);
+
+            for (s32 i = 0; i < cur_hp; ++i)
+            {
+                s32 row = i / hearts_per_line;
+                s32 col = i % hearts_per_line;
+
+                SDL_FRect cur_rect {
+                    born_pos.x + col * (heart_w + gap),
+                    born_pos.y + row * (heart_h + gap),
+                    static_cast<f32>(heart_w),
+                    static_cast<f32>(heart_h)
+                };
+
+                ret = SDL_RenderCopyF(G_GAME.renderer(), heart_texture, NULL, &cur_rect);
+            }
+        }
+    }
     return 0;
 }
 

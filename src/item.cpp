@@ -100,11 +100,38 @@ s32 Item::initItem(ItemType type)
 
 s32 Item::applyEffect(Object *other)
 {
+    switch (type())
+    {
+    case ItemType::ITEM_HEALTH:
+    {
+        // 给player加血
+        other->set_hp(other->hp() + 1);
+        break;
+    }
+    case ItemType::ITEM_SHIELD:
+    {
+        // TODO: 添加盾牌效果
+        break;
+    }
+    case ItemType::ITEM_TIME:
+    {
+        // TODO: 
+        break;
+    }
+    default:
+    {
+        break;
+    }
+    }
     return 0;
 }
 
 s32 Item::onCollision(Object* other)
 {
+    if (! other)
+    {
+        return 0;
+    }
     if (! other->IsPlayer())
     {
         return 0;
@@ -112,7 +139,7 @@ s32 Item::onCollision(Object* other)
 
     // 只处理碰撞到player
     LOG_INFO("Item:%s collided with player:%s", DebugString().c_str(), other->DebugString().c_str());
-
+    applyEffect(other);
 
 
     scene()->markRemoveObject(this);

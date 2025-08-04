@@ -32,6 +32,6 @@ private:
 
 
     // 发射相关
-    DEF_Property_default(s32, shoot_cooldown, 100); // 射击冷却时间, 单位: ms
+    DEF_Property_default(s32, shoot_cooldown, 200); // 射击冷却时间, 单位: ms
     DEF_Property_default(s64, shoot_last_time, 0); // 上次射击时间
 };

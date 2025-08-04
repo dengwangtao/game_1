@@ -19,8 +19,8 @@ s32 Item::init(const std::string& img_texture_path)
     // 设置size
     s32 w, h;
     SDL_QueryTexture(texture(), NULL, NULL, &w, &h);
-    set_height(h / 1.5f);
-    set_width(w / 1.5f);
+    set_height(h / 2.0f);
+    set_width(w / 2.0f);
     LOG_INFO("Item init: %s", DebugString().c_str());
     
     return 0;

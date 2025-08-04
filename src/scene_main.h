@@ -4,6 +4,7 @@
 
 
 #include "scene.h"
+#include "enemy_spawner.h"
 
 class Player;
 
@@ -26,6 +27,8 @@ private:
     DEF_Property_default(bool, inited, false);
 
     Player* player_ = nullptr;
+
+    EnemySpawner enemy_spawner_;
 };
 
 

@@ -131,7 +131,7 @@ s32 Player::shoot()
         return -1;
     }
 
-    bullet->init("../assets/image/bullet.png");
+    bullet->init("../assets/image/bullet-d.png");
 
 
     // 计算子弹位置

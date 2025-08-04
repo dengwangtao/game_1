@@ -25,45 +25,54 @@ s32 Game::run()
     LOG_INFO("game run");
 
     set_is_running(true);
-    
-    while (is_running())
+
+    try
     {
-        // 获取当前时间 ns
-        s64 now_ms = GetNowMs();
-        set_now_ms(now_ms);
-
-        set_frame_interval(1000.0f / frame_rate());
-        
-        auto frame_start_time = now_ms;
-
-        SDL_Event event;
-
-        handleEvent(&event);
-
-        if (! current_scene())
+        while (is_running())
         {
-            LOG_DEBUG("current scene is null");
-            continue;
-        }
-        
-        update(now_ms);
+            // 获取当前时间 ns
+            s64 now_ms = GetNowMs();
+            set_now_ms(now_ms);
 
-        render();
-        
-        // 计算下一帧需要的时间
-        s64 frame_end_time = GetNowMs();
-        s64 frame_time = frame_end_time - frame_start_time;
+            set_frame_interval(1000.0f / frame_rate());
+            
+            auto frame_start_time = now_ms;
 
-        // 控制帧率
-        if (frame_time < frame_interval())
-        {
-            SDL_Delay(static_cast<u32>(frame_interval() - frame_time));
+            SDL_Event event;
+
+            handleEvent(&event);
+
+            if (! current_scene())
+            {
+                LOG_DEBUG("current scene is null");
+                continue;
+            }
+            
+            update(now_ms);
+
+            render();
+            
+            // 计算下一帧需要的时间
+            s64 frame_end_time = GetNowMs();
+            s64 frame_time = frame_end_time - frame_start_time;
+
+            // 控制帧率
+            if (frame_time < frame_interval())
+            {
+                SDL_Delay(static_cast<u32>(frame_interval() - frame_time));
+            }
+            else
+            {
+                // 掉帧
+                LOG_WARN("frame time %lld > frame interval %lf", frame_time, frame_interval());
+            }
         }
-        else
-        {
-            // 掉帧
-            LOG_WARN("frame time %lld > frame interval %lf", frame_time, frame_interval());
-        }
+
+    }
+    catch(const std::exception& e)
+    {
+        LOG_ERROR("game run error: %s", e.what());
+        set_is_running(false);
     }
 
     return 0;
@@ -87,7 +96,7 @@ s32 Game::init()
     
     // 创建窗口
     window_ = SDL_CreateWindow("DWT Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
-            window_width(), window_height(), SDL_WINDOW_SHOWN);
+            window_width(), window_height(), SDL_WINDOW_SHOWN | SDL_WINDOW_MOUSE_CAPTURE);
     if (! window_)
     {
         LOG_ERROR("SDL_CreateWindow error: %s", SDL_GetError());
@@ -191,10 +200,11 @@ s32 Game::handleEvent(SDL_Event* event)
 
     while (SDL_PollEvent(event))
     {
-        if (event->type == SDL_QUIT)
+        if (event->type == SDL_EventType::SDL_QUIT)
         {
             LOG_DEBUG("SDL_QUIT");
             set_is_running(false);
+            return 0;
         }
         if (current_scene())
         {

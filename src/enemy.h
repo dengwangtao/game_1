@@ -14,6 +14,8 @@ public:
 
     s32 UpdatePosition(s64 now_ms) override;
 
+    s32 onDestroy() override;
+
     s32 shoot();
 
 

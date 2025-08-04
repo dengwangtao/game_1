@@ -50,15 +50,17 @@ public:
     T* addAnimation(Args&&... args);
     s32 addAnimation(Animation* animation);
     s32 removeAnimation(Animation* animation);
+    s32 markRemoveAnimation(Animation* animation);
     s32 updateAnimations(s64 now_ms);
 
 
 protected:
     std::unordered_map<u64, Object*> objects_;
     std::unordered_set<u64> players_;
-    std::vector<Object*> tobe_removed_objects_;
+    std::unordered_set<Object*> tobe_removed_objects_;
 
     std::unordered_set<Animation*> animations_; // 动画列表
+    std::unordered_set<Animation*> tobe_removed_animations_;
 };
 
 

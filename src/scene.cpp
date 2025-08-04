@@ -17,8 +17,13 @@ Scene::~Scene()
         delete it->second;
     }
     objects_.clear();
-
     players_.clear();
+
+    for (auto it = animations_.begin(); it != animations_.end(); ++it)
+    {
+        delete *it;
+    }
+    animations_.clear();
 
     LOG_DEBUG("Scene destroyed");
 }
@@ -34,6 +39,12 @@ s32 Scene::update(s64 now_ms)
         removeObject(obj);
     }
     tobe_removed_objects_.clear();
+
+    for (auto* ani : tobe_removed_animations_)
+    {
+        removeAnimation(ani);
+    }
+
     return 0;
 }
 
@@ -96,7 +107,7 @@ s32 Scene::markRemoveObject(Object *obj)
         return -1;
     }
     obj->set_is_marked_for_removal(true);
-    tobe_removed_objects_.push_back(obj);
+    tobe_removed_objects_.insert(obj);
     return 0;
 }
 
@@ -157,6 +168,16 @@ s32 Scene::removeAnimation(Animation* animation)
     }
 
     animations_.erase(animation);
+
+    return 0;
+}
+s32 Scene::markRemoveAnimation(Animation *animation)
+{
+    if (animation == nullptr)
+    {
+        return -1;
+    }
+    tobe_removed_animations_.insert(animation);
 
     return 0;
 }

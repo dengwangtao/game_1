@@ -23,7 +23,7 @@ public:
     virtual bool collidesWith(Object* other) const { return true; };
     virtual s32 onCollision(Object* other) { return 0; }
 
-    virtual s32 onDestroy() { return 0; }
+    virtual s32 onDestroy();
 
     // 获取原始spawner
     Object* originSpawner(int depth=0) const;

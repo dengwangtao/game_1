@@ -160,6 +160,8 @@ s32 Player::shoot()
 
 s32 Player::onDestroy()
 {
+    Object::onDestroy();
+
     auto* cur_scene = scene();
     if (! cur_scene)
     {

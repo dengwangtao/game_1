@@ -151,28 +151,7 @@ s32 Enemy::shoot()
 
 s32 Enemy::onDestroy()
 {
-    auto* cur_scene = scene();
-    if (! cur_scene)
-    {
-        LOG_ERROR("cur_scene is null");
-        return -1;
-    }
-
-    auto* ani = cur_scene->addAnimation<Animation>(cur_scene);
-    if (! ani)
-    {
-        LOG_ERROR("Failed to create animation");
-        return -2;
-    }
-
-    ani->init("../assets/effect/explosion.png");
-
-    // 设置位置
-    auto born_pos = Tools::calculate_aligned_position(GetRect(), ani->width(), ani->height());
-    ani->mutable_position()->x = born_pos.x;
-    ani->mutable_position()->y = born_pos.y;
-
-    ani->play(800);
-
+    Object::onDestroy();
+    
     return 0;
 }

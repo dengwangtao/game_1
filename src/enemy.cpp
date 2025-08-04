@@ -78,16 +78,28 @@ s32 Enemy::shoot()
         return -1;
     }
 
+    if (cur_scene->playerCount() <= 0)
+    {
+        return 0;
+    }
+
+    // 随机一个玩家
+    s32 rdm_idx = Tools::random(0, cur_scene->playerCount() - 1);
+
     // 计算与玩家的角度
     Player* p = nullptr;
     cur_scene->foreachObject<Player>([&](Player& player) {
         p = &player;
-        return 0;
+        if (rdm_idx == 0)
+        {
+            return 1;
+        }
+        rdm_idx--;
     });
 
     if (!p)
     {
-        LOG_WARN("No player");
+        LOG_ERROR("No player");
         return -2;
     }
 

@@ -186,10 +186,10 @@ s32 Player::onCollision(Object* other)
 
     if (other->IsEnemy())
     {
-        other->set_hp(other->hp() - attack());
-        set_hp(hp() - other->attack());
-
         LOG_INFO("Player:%s collides with Enemy:%s", DebugString().c_str(), other->DebugString().c_str());
+
+        other->set_hp(0);
+        set_hp(hp() - other->attack());
     }
 
     return 0;

@@ -27,6 +27,8 @@ public:
     virtual s32 handleEvent(SDL_Event* event) = 0;
 
 
+    s32 playerCount() const { return players_.size(); }
+
     template<typename T, typename... Args>
     T* addObject(Args&&... args);
 

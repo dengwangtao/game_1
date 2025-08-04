@@ -60,7 +60,7 @@ s32 Scene::addObject(Object *obj)
     {
         delete objects_[guid];
         objects_.erase(guid);
-        LOG_WARN("Object with guid: %s already exists, removed it", guid);
+        LOG_WARN("Object with guid: %lld already exists, removed it", guid);
     }
 
     LOG_INFO("Adding object with guid: %s", obj->DebugString().c_str());

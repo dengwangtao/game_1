@@ -62,7 +62,7 @@ s32 Game::run()
         else
         {
             // 掉帧
-            LOG_WARN("frame time %lld > frame interval %lld", frame_time, frame_interval());
+            LOG_WARN("frame time %lld > frame interval %lf", frame_time, frame_interval());
         }
     }
 

@@ -95,6 +95,7 @@ s32 Enemy::shoot()
             return 1;
         }
         rdm_idx--;
+        return 0;
     });
 
     if (!p)

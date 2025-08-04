@@ -12,6 +12,7 @@
 #include <unordered_set>
 #include <functional>
 
+class Animation;
 class Object;
 class Player;
 class Scene
@@ -44,10 +45,20 @@ public:
     s32 foreachObject(const std::function<s32(T&)> func);
 
 
+
+    template<typename T, typename... Args>
+    T* addAnimation(Args&&... args);
+    s32 addAnimation(Animation* animation);
+    s32 removeAnimation(Animation* animation);
+    s32 updateAnimations(s64 now_ms);
+
+
 protected:
     std::unordered_map<u64, Object*> objects_;
     std::unordered_set<u64> players_;
     std::vector<Object*> tobe_removed_objects_;
+
+    std::unordered_set<Animation*> animations_; // 动画列表
 };
 
 
@@ -98,6 +109,17 @@ s32 Scene::foreachObject(const std::function<s32(T&)> func)
         }
     }
     return 0;
+}
+
+
+template<typename T, typename... Args>
+T* Scene::addAnimation(Args&&... args)
+{
+    static_assert(std::is_base_of<Animation, T>::value, "T must be derived from Animation");
+
+    T* animation = new T(std::forward<Args>(args)...);
+    addAnimation(animation);
+    return animation;
 }
 
 #endif // !SCENE_H

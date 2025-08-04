@@ -2,6 +2,7 @@
 #include "object.h"
 #include "player.h"
 #include "tools.h"
+#include "animation.h"
 
 Scene::Scene()
 {
@@ -25,6 +26,8 @@ Scene::~Scene()
 s32 Scene::update(s64 now_ms)
 {
     updateCollision();
+
+    updateAnimations(now_ms);
 
     for (auto* obj : tobe_removed_objects_)
     {
@@ -129,6 +132,41 @@ s32 Scene::updateCollision()
         }
     }
 
+
+    return 0;
+}
+
+
+s32 Scene::addAnimation(Animation* animation)
+{
+    if (animation == nullptr)
+    {
+        return -1;
+    }
+
+    animations_.insert(animation);
+    LOG_INFO("Adding animation with name: %s", animation->DebugString().c_str());
+
+    return 0;
+}
+s32 Scene::removeAnimation(Animation* animation)
+{
+    if (animation == nullptr)
+    {
+        return -1;
+    }
+
+    animations_.erase(animation);
+
+    return 0;
+}
+s32 Scene::updateAnimations(s64 now_ms)
+{
+
+    for (auto* animation : animations_)
+    {
+        animation->update(now_ms);
+    }
 
     return 0;
 }

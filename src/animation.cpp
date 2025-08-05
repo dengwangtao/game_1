@@ -116,7 +116,7 @@ s32 Animation::render()
 s32 Animation::makeTexture(const std::string& file_path)
 {
     set_texture(
-        G_RESOURCE_MGR.LoadTexture(file_path)
+        G_RESOURCE_MGR.loadResource<SDL_Texture>(file_path)
     );
 
     if (texture() == nullptr)

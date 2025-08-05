@@ -101,7 +101,7 @@ s32 Object::render()
 s32 Object::makeTexture(const std::string &file_path)
 {
     set_texture(
-        G_RESOURCE_MGR.LoadTexture(file_path)
+        G_RESOURCE_MGR.loadResource<SDL_Texture>(file_path)
     );
 
     if (texture() == nullptr)
@@ -165,7 +165,7 @@ s32 Object::renderHP()
     }
 
     s32 ret = 0;
-    auto* heart_texture = G_RESOURCE_MGR.LoadTexture("../assets/image/hp.png");
+    auto* heart_texture = G_RESOURCE_MGR.loadResource<SDL_Texture>("../assets/image/hp.png");
     if (heart_texture == nullptr)
     {
         LOG_ERROR("Failed to load texture");

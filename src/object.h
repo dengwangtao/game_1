@@ -6,6 +6,7 @@
 #include "object_type.h"
 
 class Scene;
+class Item;
 
 class Object
 {
@@ -24,6 +25,9 @@ public:
     virtual s32 onCollision(Object* other) { return 0; }
 
     virtual s32 onDestroy();
+
+    virtual s32 onKill(Object* other) { return 0; }
+    virtual s32 onGetItem(Item* item) { return 0; }
 
     // 获取原始spawner
     Object* originSpawner(int depth=0) const;

@@ -116,6 +116,11 @@ s32 Bullet::onCollision(Object* other)
 
     other->set_hp(other->hp() - attack());
 
+    if (other->hp() <= 0)
+    {
+        self_spawner->onKill(other);
+    }
+
 
     // 播放音效
     auto* mixer = G_RESOURCE_MGR.loadResource<Mix_Chunk>("../assets/sound/eff11.wav");

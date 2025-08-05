@@ -8,6 +8,10 @@
 #include "animation.h"
 #include <SDL_mixer.h>
 #include <stdexcept>
+#include <sstream>
+#include <memory>
+#include <SDL_ttf.h>
+#include "resource_mgr.h"
 
 SceneMain::SceneMain()
 {
@@ -71,6 +75,8 @@ s32 SceneMain::render()
         LOG_ERROR("SceneMain not inited");
         return -1;
     }
+
+    renderScore();
 
     for (auto& obj : objects_)
     {
@@ -162,6 +168,57 @@ s32 SceneMain::keyboardControl()
         
     }
 
+
+    return 0;
+}
+
+s32 SceneMain::renderScore()
+{
+    auto* font = G_RESOURCE_MGR.loadResource<TTF_Font>("../assets/font/VonwaonBitmap-16px.ttf", 16);
+
+    if (!font)
+    {
+        LOG_ERROR("Failed to load font");
+        return -1;
+    }
+    // 渲染每个玩家的分数
+    int y_offset = 0;
+
+    foreachObject<Player>([&](Player& player) -> s32 {
+        // 拼接玩家信息
+        std::string text = std::to_string(player.guid()) + " score: " + std::to_string(player.score());
+
+
+        // 创建每行的 surface
+        std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)> surface(TTF_RenderUTF8_Solid(font, text.c_str(), {255, 255, 255, 255}), &SDL_FreeSurface);
+        if (! surface)
+        {
+            LOG_ERROR("Failed to render text: %s", TTF_GetError());
+            return -1;
+        }
+
+        // 创建每行的 texture
+        std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)> texture(SDL_CreateTextureFromSurface(G_GAME.renderer(), surface.get()), &SDL_DestroyTexture);
+        if (!texture)
+        {
+            LOG_ERROR("Failed to create texture: %s", SDL_GetError());
+            return -1;
+        }
+
+        // 计算位置
+        SDL_Rect dst_rect = {0, y_offset, surface->w, surface->h};
+        y_offset += surface->h;  // 增加 y_offset 以便下行文本渲染到下方
+
+        // 渲染当前行
+        s32 ret = SDL_RenderCopy(G_GAME.renderer(), texture.get(), nullptr, &dst_rect);
+        if (ret)
+        {
+            LOG_ERROR("Failed to render texture: %s", SDL_GetError());
+            return -1;
+        }
+
+        return 0;
+    });
 
     return 0;
 }

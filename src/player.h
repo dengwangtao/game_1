@@ -23,6 +23,9 @@ public:
 
     s32 UpdatePosition(s64 now_ms) override;
 
+    s32 onKill(Object* other) override;
+    s32 onGetItem(Item* item) override;
+
     s32 addShield();
 
 private:
@@ -40,5 +43,7 @@ private:
     DEF_Property_default(s64, shoot_last_time, 0); // 上次射击时间
 
     DEF_Property_default(Shield*, shield, nullptr); // 盾牌
+
+    DEF_Property_default(s32, score, 0); // 分数
 
 };

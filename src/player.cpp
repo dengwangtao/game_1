@@ -6,6 +6,7 @@
 #include "shield.h"
 #include <cmath>
 #include "resource_mgr.h"
+#include "item.h"
 
 Player::~Player()
 {
@@ -237,6 +238,34 @@ s32 Player::onCollision(Object* other)
         other->set_hp(0);
         set_hp(hp() - other->attack());
     }
+
+    return 0;
+}
+
+s32 Player::onKill(Object* other)
+{
+    if (! other)
+    {
+        return 0;
+    }
+
+    set_score(score() + 5);
+
+    LOG_DEBUG("Player kill %s, score increased to %d", other->DebugString().c_str(), score());
+
+    return 0;
+}
+
+s32 Player::onGetItem(Item* item)
+{
+    if (! item)
+    {
+        return 0;
+    }
+
+    set_score(score() + 2);
+
+    LOG_DEBUG("Player get item %s, score increased to %d", item->DebugString().c_str(), score());
 
     return 0;
 }

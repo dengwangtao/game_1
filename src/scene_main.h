@@ -25,6 +25,8 @@ public:
 
     s32 keyboardControl();
 
+    s32 renderScore();
+
 private:
     DEF_Property_default(bool, inited, false);
     DEF_Property_default(Player*, player, nullptr);

@@ -4,9 +4,11 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_mixer.h>
+#include <SDL_ttf.h>
 
 #include <string>
 #include <unordered_map>
+#include <sstream>
 #include "game.h"
 
 
@@ -69,6 +71,21 @@ struct ResourceTraits<Mix_Chunk> {
     }
 };
 
+
+template<>
+struct ResourceTraits<TTF_Font> {
+    static TTF_Font* load(const std::string& filename, s32 size)
+    {
+        return TTF_OpenFont(filename.c_str(), size);
+    }
+
+    static void release(TTF_Font* font)
+    {
+        TTF_CloseFont(font);
+    }
+};
+
+
 // 资源管理器
 template<typename... Ts>
 class ResourceManager : public Singleton<ResourceManager<Ts...>>
@@ -82,19 +99,26 @@ public:
     }
 
     // 加载资源：只允许在资源类型列表中
-    template<typename T>
+    template<typename T, typename... Args>
     std::enable_if_t<TupleIndex_v<T, Ts...> != -1, T*>
-    loadResource(const std::string& filename)
+    loadResource(const std::string& filename, Args&&... args)
     {
+        // 拼接 filename 和 args 到一个新的字符串
+        std::ostringstream oss;
+        oss << filename << ";";
+        (void)(oss << ... << std::forward<Args>(args));
+
+        std::string key = oss.str();  // 得到拼接后的字符串
+
         auto& map = std::get<TupleIndex_v<T, Ts...>>(resources_);
-        auto it = map.find(filename);
+        auto it = map.find(key);
         if (it != map.end())
         {
             return it->second;
         }
-        LOG_INFO("Loading resource: %s", filename.c_str());
-        T* resource = ResourceTraits<T>::load(filename);
-        map[filename] = resource;
+        LOG_INFO("Loading resource: %s", key.c_str());
+        T* resource = ResourceTraits<T>::load(filename, std::forward<Args>(args)...);
+        map[key] = resource;
         return resource;
     }
 
@@ -114,4 +138,4 @@ private:
     std::tuple<std::unordered_map<std::string, Ts*>...> resources_;
 };
 
-#define G_RESOURCE_MGR ResourceManager<SDL_Texture, Mix_Chunk>::Instance()
+#define G_RESOURCE_MGR ResourceManager<SDL_Texture, Mix_Chunk, TTF_Font>::Instance()

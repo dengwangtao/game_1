@@ -156,6 +156,7 @@ s32 Item::onCollision(Object* other)
         Mix_PlayChannel(-1, mixer, 0);
     }
 
+    other->onGetItem(this);
 
     scene()->markRemoveObject(this);
 

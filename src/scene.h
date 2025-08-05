@@ -90,7 +90,7 @@ s32 Scene::foreachObject(const std::function<s32(T&)> func)
             if (obj != nullptr)
             {
                 Player* player = static_cast<Player*>(obj);
-                if (func(*player))
+                if (func(*player) != 0)
                 {
                     break;
                 }
@@ -103,7 +103,7 @@ s32 Scene::foreachObject(const std::function<s32(T&)> func)
         {
             if (dynamic_cast<T*>(obj) != nullptr)
             {
-                if (func(obj))
+                if (func(obj) != 0)
                 {
                     break;
                 }

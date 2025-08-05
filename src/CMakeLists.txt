@@ -14,6 +14,11 @@ file(GLOB_RECURSE SRCS CONFIGURE_DEPENDS *.cpp *.h)
 add_executable(${TARGET} ${SRCS})
 
 
+if (MSVC)
+    target_compile_options(${TARGET} PRIVATE /wd4100 /wd4244 /wd4267)
+endif()
+
+
 target_link_libraries(
     ${TARGET}
         ${SDL2_LIBRARIES} # 在sdl2-config.cmake中定义的变量

@@ -8,7 +8,7 @@
 #include "item_spawner.h"
 
 class Player;
-class Mix_Music;
+struct Mix_Music;
 
 class SceneMain : public Scene
 {

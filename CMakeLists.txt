@@ -15,6 +15,9 @@ if (MSVC)
     add_compile_options(/utf-8)
 else()
     add_compile_options(-Wall -Wextra -Wpedantic)
+    add_compile_options(-Wno-unused-but-set-variable)
+    add_compile_options(-Wno-unused-parameter)
+    add_compile_options(-Wno-reorder)
 endif()
 
 

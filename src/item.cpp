@@ -2,7 +2,7 @@
 #include "tools.h"
 #include "game.h"
 #include "tools.h"
-
+#include "resource_mgr.h"
 #include <cmath>
 
 s32 Item::init(const std::string& img_texture_path)
@@ -148,6 +148,13 @@ s32 Item::onCollision(Object* other)
     // 只处理碰撞到player
     LOG_INFO("Item:%s collided with player:%s", DebugString().c_str(), other->DebugString().c_str());
     applyEffect(other);
+
+     // 播放音效
+    auto* mixer = G_RESOURCE_MGR.loadResource<Mix_Chunk>("../assets/sound/eff5.wav");
+    if (mixer)
+    {
+        Mix_PlayChannel(-1, mixer, 0);
+    }
 
 
     scene()->markRemoveObject(this);

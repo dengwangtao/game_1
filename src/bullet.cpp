@@ -1,6 +1,7 @@
 #include "bullet.h"
 #include "tools.h"
 #include "game.h"
+#include "resource_mgr.h"
 
 s32 Bullet::init(const std::string& img_texture_path)
 {
@@ -114,6 +115,14 @@ s32 Bullet::onCollision(Object* other)
     set_hp(0);
 
     other->set_hp(other->hp() - attack());
+
+
+    // 播放音效
+    auto* mixer = G_RESOURCE_MGR.loadResource<Mix_Chunk>("../assets/sound/eff11.wav");
+    if (mixer)
+    {
+        Mix_PlayChannel(-1, mixer, 0);
+    }
 
     LOG_INFO("Bullet:%s hit Object:%s, hp: %d->%d", DebugString().c_str(), other->DebugString().c_str(), old_hp, other->hp());
 

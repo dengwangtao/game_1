@@ -5,6 +5,7 @@
 #include "scene_main.h"
 #include "shield.h"
 #include <cmath>
+#include "resource_mgr.h"
 
 Player::~Player()
 {
@@ -180,6 +181,15 @@ s32 Player::shoot()
     // 继承攻击力
     bullet->set_attack(attack());
 
+
+
+    // 播放音效
+    auto* mixer = G_RESOURCE_MGR.loadResource<Mix_Chunk>("../assets/sound/laser_shoot4.wav");
+    if (mixer)
+    {
+        Mix_PlayChannel(-1, mixer, 0);
+    }
+
     set_shoot_last_time(G_GAME.now_ms());
     return 0;
 }
@@ -194,6 +204,13 @@ s32 Player::onDestroy()
     {
         LOG_ERROR("cur_scene is null");
         return -1;
+    }
+
+    // 播放音效
+    auto* mixer = G_RESOURCE_MGR.loadResource<Mix_Chunk>("../assets/sound/explosion1.wav");
+    if (mixer)
+    {
+        Mix_PlayChannel(-1, mixer, 0);
     }
 
     auto* cur_main_scene = dynamic_cast<SceneMain*>(cur_scene);

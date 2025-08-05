@@ -4,6 +4,7 @@
 #include "bullet.h"
 #include "scene.h"
 #include "animation.h"
+#include "resource_mgr.h"
 #include <cmath>
 
 s32 Enemy::init(const std::string& img_texture_path)
@@ -141,6 +142,14 @@ s32 Enemy::shoot()
     // 继承攻击力
     bullet->set_attack(attack());
 
+
+    // 播放音效
+    auto* mixer = G_RESOURCE_MGR.loadResource<Mix_Chunk>("../assets/sound/xs_laser.wav");
+    if (mixer)
+    {
+        Mix_PlayChannel(-1, mixer, 0);
+    }
+
     set_shoot_last_time(G_GAME.now_ms());
 
 
@@ -152,6 +161,18 @@ s32 Enemy::shoot()
 s32 Enemy::onDestroy()
 {
     Object::onDestroy();
+
+    // 如果是在屏幕内，才播放音效
+    auto game_rect = SDL_FRect{0, 0, static_cast<f32>(G_GAME.window_width()), static_cast<f32>(G_GAME.window_height())};
+    if (Tools::is_rect_overlap(GetRect(), game_rect))
+    {
+        // 播放音效
+        auto* mixer = G_RESOURCE_MGR.loadResource<Mix_Chunk>("../assets/sound/explosion3.wav");
+        if (mixer)
+        {
+            Mix_PlayChannel(-1, mixer, 0);
+        }
+    }
     
     return 0;
 }

@@ -8,6 +8,7 @@
 #include "item_spawner.h"
 
 class Player;
+class Mix_Music;
 
 class SceneMain : public Scene
 {
@@ -27,6 +28,8 @@ public:
 private:
     DEF_Property_default(bool, inited, false);
     DEF_Property_default(Player*, player, nullptr);
+
+    DEF_Property_default(Mix_Music*, bgm, nullptr);
 
     EnemySpawner enemy_spawner_;
     ItemSpawner item_spawner_;

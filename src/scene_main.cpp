@@ -6,7 +6,8 @@
 #include "game.h"
 #include "player.h"
 #include "animation.h"
-
+#include <SDL_mixer.h>
+#include <stdexcept>
 
 SceneMain::SceneMain()
 {
@@ -19,6 +20,20 @@ SceneMain::~SceneMain()
 
 s32 SceneMain::init()
 {
+    // load bgm
+    bgm_ = Mix_LoadMUS("../assets/music/03_Racing_Through_Asteroids_Loop.ogg");
+    if (bgm_ == nullptr)
+    {
+        LOG_ERROR("Mix_LoadMUS error: %s", Mix_GetError());
+        throw std::runtime_error("Mix_LoadMUS error");
+        return -1;
+    }
+    // 循环播放bgm
+    Mix_PlayMusic(bgm_, -1);
+    // 设置音量
+    Mix_VolumeMusic(5);
+
+
     enemy_spawner_.init();
     item_spawner_.init();
 
@@ -68,7 +83,14 @@ s32 SceneMain::render()
     return 0;
 }
 s32 SceneMain::clean()
-{    
+{
+    if (bgm())
+    {
+        Mix_HaltMusic();
+        Mix_FreeMusic(bgm_);
+        set_bgm(nullptr);
+    }
+
     return 0;
 }
 s32 SceneMain::handleEvent(SDL_Event*)

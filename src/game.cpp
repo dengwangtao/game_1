@@ -4,6 +4,8 @@
 #include <chrono>
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_ttf.h>
+#include <SDL_mixer.h>
 
 Game::Game()
 {
@@ -93,6 +95,26 @@ s32 Game::init()
         LOG_ERROR("IMG_Init error: %s", IMG_GetError());
         set_is_running(false);
     }
+
+    // 初始化SDL_ttf
+    if (TTF_Init() != 0)
+    {
+        LOG_ERROR("TTF_Init error: %s", TTF_GetError());
+        set_is_running(false);
+    }
+
+    // 初始化SDL_mixer
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) != 0)
+    {
+        LOG_ERROR("Mix_OpenAudio error: %s", Mix_GetError());
+        set_is_running(false);
+    }
+
+    if (Mix_Init(MIX_INIT_MP3 | MIX_INIT_OGG) != (MIX_INIT_MP3 | MIX_INIT_OGG))
+    {
+        LOG_ERROR("Mix_Init error: %s", Mix_GetError());
+        set_is_running(false);
+    }
     
     // 创建窗口
     window_ = SDL_CreateWindow("DWT Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
@@ -157,6 +179,17 @@ s32 Game::clean()
         renderer_ = nullptr;
         LOG_DEBUG("SDL_DestroyRenderer");
     }
+
+    // 清理SDL_mixer
+    Mix_CloseAudio();
+    LOG_DEBUG("Mix_CloseAudio");
+
+    Mix_Quit();
+    LOG_DEBUG("Mix_Quit");
+
+    // 清理SDL_ttf
+    TTF_Quit();
+    LOG_DEBUG("TTF_Quit");
 
     // 清理SDL_image
     IMG_Quit();

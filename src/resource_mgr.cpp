@@ -1,7 +1,7 @@
-#include "texture_mgr.h"
+#include "resource_mgr.h"
 #include "game.h"
 
-TextureManager::~TextureManager()
+ResourceManager::~ResourceManager()
 {
     for (auto& pair : textures_)
     {
@@ -10,7 +10,7 @@ TextureManager::~TextureManager()
     }
 }
 
-SDL_Texture *TextureManager::LoadTexture(const std::string &filename)
+SDL_Texture *ResourceManager::LoadTexture(const std::string &filename)
 {
     if (textures_.find(filename)!= textures_.end())
     {

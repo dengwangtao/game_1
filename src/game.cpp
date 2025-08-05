@@ -115,6 +115,10 @@ s32 Game::init()
         LOG_ERROR("Mix_Init error: %s", Mix_GetError());
         set_is_running(false);
     }
+
+    // 音效通道32
+    Mix_AllocateChannels(32);
+    
     
     // 创建窗口
     window_ = SDL_CreateWindow("DWT Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 

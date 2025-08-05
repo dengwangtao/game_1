@@ -1,5 +1,5 @@
 #include "animation.h"
-#include "texture_mgr.h"
+#include "resource_mgr.h"
 #include "tools.h"
 #include "game.h"
 #include <sstream>
@@ -116,7 +116,7 @@ s32 Animation::render()
 s32 Animation::makeTexture(const std::string& file_path)
 {
     set_texture(
-        G_TEXTURE_MGR.LoadTexture(file_path)
+        G_RESOURCE_MGR.LoadTexture(file_path)
     );
 
     if (texture() == nullptr)

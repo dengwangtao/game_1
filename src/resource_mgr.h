@@ -7,14 +7,14 @@
 #include <string>
 #include <unordered_map>
 
-class TextureManager : public Singleton<TextureManager>
+class ResourceManager : public Singleton<ResourceManager>
 {
 public:
-    ~TextureManager();
+    ~ResourceManager();
     SDL_Texture* LoadTexture(const std::string& filename);
 
 private:
     std::unordered_map<std::string, SDL_Texture*> textures_;
 };
 
-#define G_TEXTURE_MGR TextureManager::Instance()
+#define G_RESOURCE_MGR ResourceManager::Instance()

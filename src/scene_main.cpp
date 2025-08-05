@@ -32,6 +32,8 @@ s32 SceneMain::init()
     Mix_PlayMusic(bgm_, -1);
     // 设置音量
     Mix_VolumeMusic(5);
+    // 设置所有音效的音量
+    Mix_Volume(-1, 5);
 
 
     enemy_spawner_.init();

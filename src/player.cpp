@@ -109,24 +109,28 @@ s32 Player::addShield()
 
 s32 Player::applyTimeItem()
 {
-    auto after_cooldown = shoot_cooldown() - 50;
+    static constexpr s32 TIME_ITEM_DURATION = 10000;
+    static constexpr s32 TIME_ITEM_SPEED_BOOST = 100;
+    static constexpr s32 TIME_ITEM_COOLDOWN_REDUCE = 20;
+
+    auto after_cooldown = shoot_cooldown() - TIME_ITEM_COOLDOWN_REDUCE;
     if (after_cooldown >= 0)
     {
         set_shoot_cooldown(after_cooldown);
-        set_max_speed(max_speed() + 100);
+        set_max_speed(max_speed() + TIME_ITEM_SPEED_BOOST);
 
-        G_TIMER.addTimer(10000, [this]()
+        G_TIMER.addTimer(TIME_ITEM_DURATION, [this]()
         {
-            set_shoot_cooldown(shoot_cooldown() + 50);
-            set_max_speed(max_speed() - 100);
+            set_shoot_cooldown(shoot_cooldown() + TIME_ITEM_COOLDOWN_REDUCE);
+            set_max_speed(max_speed() - TIME_ITEM_SPEED_BOOST);
         });
     }
     else // 如果cd已经无法减小，则只最大增加速度
     {
-        set_max_speed(max_speed() + 100);
-        G_TIMER.addTimer(10000, [this]()
+        set_max_speed(max_speed() + TIME_ITEM_SPEED_BOOST);
+        G_TIMER.addTimer(TIME_ITEM_DURATION, [this]()
         {
-            set_max_speed(max_speed() - 100);
+            set_max_speed(max_speed() - TIME_ITEM_SPEED_BOOST);
         });
     }
 

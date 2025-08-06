@@ -7,6 +7,7 @@
 #include <cmath>
 #include "resource_mgr.h"
 #include "item.h"
+#include "timer.h"
 
 Player::~Player()
 {
@@ -101,6 +102,36 @@ s32 Player::addShield()
             LOG_ERROR("Failed to create shield");
             return -1;
         }
+    }
+
+    return 0;
+}
+
+s32 Player::applyTimeItem()
+{
+    static constexpr s32 TIME_ITEM_DURATION = 10000;
+    static constexpr s32 TIME_ITEM_SPEED_BOOST = 100;
+    static constexpr s32 TIME_ITEM_COOLDOWN_REDUCE = 20;
+
+    auto after_cooldown = shoot_cooldown() - TIME_ITEM_COOLDOWN_REDUCE;
+    if (after_cooldown >= 0)
+    {
+        set_shoot_cooldown(after_cooldown);
+        set_max_speed(max_speed() + TIME_ITEM_SPEED_BOOST);
+
+        G_TIMER.addTimer(TIME_ITEM_DURATION, [this]()
+        {
+            set_shoot_cooldown(shoot_cooldown() + TIME_ITEM_COOLDOWN_REDUCE);
+            set_max_speed(max_speed() - TIME_ITEM_SPEED_BOOST);
+        });
+    }
+    else // 如果cd已经无法减小，则只最大增加速度
+    {
+        set_max_speed(max_speed() + TIME_ITEM_SPEED_BOOST);
+        G_TIMER.addTimer(TIME_ITEM_DURATION, [this]()
+        {
+            set_max_speed(max_speed() - TIME_ITEM_SPEED_BOOST);
+        });
     }
 
     return 0;

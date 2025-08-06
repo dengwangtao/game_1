@@ -1,6 +1,6 @@
 #include "game.h"
 #include "scene_main.h"
-
+#include "timer.h"
 #include <chrono>
 #include <SDL.h>
 #include <SDL_image.h>
@@ -252,6 +252,8 @@ s32 Game::handleEvent(SDL_Event* event)
 }
 s32 Game::update(s64 now_ms)
 {
+    G_TIMER.update(now_ms);
+
     if (current_scene())
     {
         current_scene()->update(now_ms);

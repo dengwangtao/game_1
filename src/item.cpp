@@ -117,13 +117,14 @@ s32 Item::applyEffect(Object *other)
     }
     case ItemType::ITEM_SHIELD:
     {
-        // TODO: 添加盾牌效果
+        // 添加盾牌效果
         player->addShield();
         break;
     }
     case ItemType::ITEM_TIME:
     {
-        // TODO: 
+        // 减少，增加移速
+        player->applyTimeItem();
         break;
     }
     default:

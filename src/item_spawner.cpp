@@ -54,6 +54,7 @@ s32 ItemSpawner::spawn_item(s64 now_ms)
     }
 
     auto item_type = Tools::random(ITEM_TYPE_MIN, ITEM_TYPE_MAX);
+    item_type = ITEM_TIME;
 
     s32 ret = item->initItem(static_cast<ItemType>(item_type));
     if (ret)

@@ -28,6 +28,8 @@ public:
 
     s32 addShield();
 
+    s32 applyTimeItem();
+
 private:
     // 是否控制移动
     DEF_Property_default(bool, is_control_move, false); // 是否控制移动
